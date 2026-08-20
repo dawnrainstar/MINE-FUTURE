@@ -1,0 +1,6 @@
+{
+  "name": "Subterranea: World Mines Divination Oracle",
+  "description": "An esoteric cartographic divination oracle using 50 world mines personified as feminine titans and mineral spirits to predict future dates, prognosticate breakthroughs, and prescribe chthonic mineral remedies.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
