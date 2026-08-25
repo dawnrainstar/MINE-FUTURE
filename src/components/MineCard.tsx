@@ -1,7 +1,8 @@
 import React from 'react';
 import { WorldMine } from '../types';
 import { motion } from 'motion/react';
-import { Compass, Eye, Flame, Globe2, Mountain, Sparkles, Waves, Zap } from 'lucide-react';
+import { Compass, Eye, Flame, Globe2, Mountain, Sparkles, Waves, Zap, Trees } from 'lucide-react';
+import { generateTitaness } from '../utils/titanessEngine';
 
 interface MineCardProps {
   mine: WorldMine;
@@ -24,6 +25,12 @@ export const MineCard: React.FC<MineCardProps> = ({
   strataDepth,
   showDetailsModal,
 }) => {
+  const titaness = mine.titaness || generateTitaness({
+    mineral: mine.primaryMineral,
+    region: mine.location || mine.country,
+    depth: mine.depthMeters,
+  });
+
   const getElementIcon = (element: string) => {
     switch (element) {
       case 'Fire':
@@ -41,8 +48,8 @@ export const MineCard: React.FC<MineCardProps> = ({
 
   const sizeClasses = {
     sm: 'w-44 h-72 text-xs',
-    md: 'w-64 h-[420px] text-sm',
-    lg: 'w-80 h-[520px] text-base',
+    md: 'w-64 h-[440px] text-sm',
+    lg: 'w-80 h-[540px] text-base',
   }[size];
 
   return (
@@ -139,7 +146,7 @@ export const MineCard: React.FC<MineCardProps> = ({
             {/* Center Visual & Archetype */}
             <div className="z-10 my-auto flex flex-col items-center text-center px-1">
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center mb-3 shadow-inner relative border"
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-2 shadow-inner relative border"
                 style={{
                   backgroundColor: `${mine.mineralColor}15`,
                   borderColor: `${mine.mineralColor}40`,
@@ -149,21 +156,28 @@ export const MineCard: React.FC<MineCardProps> = ({
                   className="w-8 h-8 rounded-full shadow-[0_0_15px_currentColor] flex items-center justify-center font-serif text-sm font-bold"
                   style={{ color: mine.mineralColor }}
                 >
-                  <Globe2 className="w-7 h-7" />
+                  <Globe2 className="w-6 h-6" />
                 </div>
               </div>
 
               <span className="text-[10px] tracking-[0.25em] font-serif uppercase text-amber-400 font-semibold">
-                {mine.arcanaArchetype}
+                {titaness.name}
               </span>
-              <h3 className="text-base font-serif font-bold text-stone-100 mt-1 leading-snug">
+              <h3 className="text-sm sm:text-base font-serif font-bold text-stone-100 mt-0.5 leading-snug">
                 {mine.name}
               </h3>
-              <p className="text-[11px] text-stone-400 font-mono mt-0.5">
+              <p className="text-[11px] text-stone-400 font-mono">
                 {mine.location}, {mine.country}
               </p>
 
-              <div className="mt-2 flex flex-wrap justify-center gap-1">
+              {/* Titaness Rune & Geomantic figure */}
+              <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-300/90 font-serif bg-amber-950/40 px-2 py-0.5 rounded-full border border-amber-500/30">
+                <span>ᚱ {titaness.rune}</span>
+                <span className="text-amber-500">·</span>
+                <span>⚚ {titaness.geomantic}</span>
+              </div>
+
+              <div className="mt-1.5 flex flex-wrap justify-center gap-1">
                 <span
                   className="text-[10px] font-medium px-2 py-0.5 rounded-full border"
                   style={{
@@ -188,7 +202,7 @@ export const MineCard: React.FC<MineCardProps> = ({
                   {mine.chthonicKeyword}
                 </span>
               </div>
-              <p className="text-[11px] text-stone-300 line-clamp-3 leading-relaxed italic font-serif">
+              <p className="text-[11px] text-stone-300 line-clamp-2 leading-relaxed italic font-serif">
                 "{isUpright ? mine.uprightMeaning : mine.invertedMeaning}"
               </p>
             </div>

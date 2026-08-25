@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { WorldMine, DivinationReading, SpreadType } from './types';
-import { Header, ActiveTab } from './components/Header';
-import { OracleChamber } from './components/OracleChamber';
-import { TectonicMap } from './components/TectonicMap';
-import { LithicScatter } from './components/LithicScatter';
-import { Grimoire } from './components/Grimoire';
-import { DailySeam } from './components/DailySeam';
-import { MineModal } from './components/MineModal';
-import { JournalModal } from './components/JournalModal';
-import { sound } from './utils/audio';
+import { WorldMine, DivinationReading } from './types';
+import { Navigation, NavTab } from './components/Navigation';
+import { ReadingsView } from './components/ReadingsView';
+import { ArchiveView } from './components/ArchiveView';
+import { AccountView } from './components/AccountView';
+import { GoogleDriveSyncModal } from './components/GoogleDriveSyncModal';
+import { OfflineDownloadModal } from './components/OfflineDownloadModal';
+import { getActiveMines } from './utils/mineDatabase';
 
 const STORAGE_KEY = 'subterranea_oracle_journal_v2';
+const PLAN_KEY = 'subterranea_user_plan_v1';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('oracle');
-  const [selectedMineForModal, setSelectedMineForModal] = useState<WorldMine | null>(null);
-  const [isJournalOpen, setIsJournalOpen] = useState<boolean>(false);
-  const [preselectedMines, setPreselectedMines] = useState<WorldMine[]>([]);
-  const [initialSpreadType, setInitialSpreadType] = useState<SpreadType>('strata3');
+  const [activeTab, setActiveTab] = useState<NavTab>('readings');
+  const [isDriveOpen, setIsDriveOpen] = useState<boolean>(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState<boolean>(false);
+
+  // Active Mines catalog (2,500+ world mines)
+  const [mines] = useState<WorldMine[]>(() => {
+    return getActiveMines();
+  });
+
+  // Subscription Plan (Free vs Premium)
+  const [isPremium, setIsPremium] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem(PLAN_KEY);
+      return stored ? JSON.parse(stored) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PLAN_KEY, JSON.stringify(isPremium));
+    } catch (e) {
+      console.error('Storage error:', e);
+    }
+  }, [isPremium]);
 
   // Stored readings from localStorage
   const [savedReadings, setSavedReadings] = useState<DivinationReading[]>(() => {
@@ -46,106 +66,79 @@ export default function App() {
   };
 
   const handleClearAllReadings = () => {
-    if (window.confirm('Clear all inscribed prophecies from your journal?')) {
+    if (window.confirm('Clear all inscribed prophecies from your archive?')) {
       setSavedReadings([]);
     }
   };
 
-  // Navigations from other views to the Oracle Chamber
-  const handleCommuneWithMine = (mine: WorldMine) => {
-    sound.playMineralClink();
-    setPreselectedMines([mine]);
-    setInitialSpreadType('single');
-    setActiveTab('oracle');
-  };
-
-  const handleCommuneWithSpread = (mines: WorldMine[]) => {
-    sound.playMineralClink();
-    setPreselectedMines(mines);
-    setInitialSpreadType(mines.length >= 4 ? 'descent4' : 'strata3');
-    setActiveTab('oracle');
-  };
-
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-500/30 selection:text-amber-200 flex flex-col justify-between">
-      {/* Top Header */}
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        savedReadingsCount={savedReadings.length}
-        openHistoryModal={() => setIsJournalOpen(true)}
-      />
+      {/* Tiny Navigation Bar (Readings | Archive | Account | Download App) */}
+      <header className="sticky top-0 z-40 bg-stone-950/90 backdrop-blur-md pt-2 pb-1 border-b border-stone-900/60">
+        <Navigation
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          savedCount={savedReadings.length}
+          isPremium={isPremium}
+          onOpenDownloadApp={() => setIsDownloadOpen(true)}
+        />
+      </header>
 
-      {/* Main Tab Content */}
-      <main className="flex-1">
-        {activeTab === 'oracle' && (
-          <OracleChamber
-            key={preselectedMines.map((m) => m.id).join('-') + initialSpreadType}
+      {/* Main Content View */}
+      <main className="flex-1 flex flex-col justify-start">
+        {activeTab === 'readings' && (
+          <ReadingsView
+            mines={mines}
             onSaveReading={handleSaveReading}
-            onOpenMineModal={(mine) => setSelectedMineForModal(mine)}
-            initialSpreadType={initialSpreadType}
-            preselectedMines={preselectedMines}
+            savedReadings={savedReadings}
+            isPremium={isPremium}
+            onOpenDownloadApp={() => setIsDownloadOpen(true)}
           />
         )}
 
-        {activeTab === 'map' && (
-          <TectonicMap
-            onSelectMine={(mine) => setSelectedMineForModal(mine)}
-            onCommuneWithMine={handleCommuneWithMine}
+        {activeTab === 'archive' && (
+          <ArchiveView
+            savedReadings={savedReadings}
+            onDeleteReading={handleDeleteReading}
+            onClearAll={handleClearAllReadings}
+            onNewReading={() => setActiveTab('readings')}
           />
         )}
 
-        {activeTab === 'scatter' && (
-          <LithicScatter
-            onCommuneWithSpread={handleCommuneWithSpread}
-            onOpenMineModal={(mine) => setSelectedMineForModal(mine)}
-          />
-        )}
-
-        {activeTab === 'grimoire' && (
-          <Grimoire
-            onOpenMineModal={(mine) => setSelectedMineForModal(mine)}
-            onCommuneWithMine={handleCommuneWithMine}
-          />
-        )}
-
-        {activeTab === 'daily' && (
-          <DailySeam
-            onCommuneWithDailyMine={handleCommuneWithMine}
-            onOpenMineModal={(mine) => setSelectedMineForModal(mine)}
+        {activeTab === 'account' && (
+          <AccountView
+            isPremium={isPremium}
+            setIsPremium={setIsPremium}
+            mines={mines}
+            savedReadings={savedReadings}
+            onOpenDriveModal={() => setIsDriveOpen(true)}
+            onOpenDownloadModal={() => setIsDownloadOpen(true)}
           />
         )}
       </main>
 
-      {/* Subterranean Footer */}
-      <footer className="mt-12 border-t border-stone-900 bg-stone-950/80 py-6 text-center text-xs text-stone-500 font-serif">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© Subterranea — The Anthropomorphic Cartography of World Mines & Chthonic Oracle</p>
-          <div className="flex items-center gap-4 font-mono text-[11px] text-stone-400">
-            <span>20 Terrestrial Deities</span>
-            <span>·</span>
-            <span>4,000m Mantle Depth</span>
-            <span>·</span>
-            <span>Schumann 7.83Hz</span>
-          </div>
-        </div>
-      </footer>
+      {/* Google Drive Sync Modal (tucked in Account) */}
+      {isDriveOpen && (
+        <GoogleDriveSyncModal
+          isOpen={isDriveOpen}
+          onClose={() => setIsDriveOpen(false)}
+          readings={savedReadings}
+          mines={mines}
+          onImportReadings={(imported) => {
+            setSavedReadings((prev) => [...imported, ...prev]);
+          }}
+        />
+      )}
 
-      {/* Full Mine Details Modal with Cartographic Figure */}
-      <MineModal
-        mine={selectedMineForModal}
-        onClose={() => setSelectedMineForModal(null)}
-        onSelectForReading={handleCommuneWithMine}
-      />
-
-      {/* Journal History Modal */}
-      <JournalModal
-        isOpen={isJournalOpen}
-        onClose={() => setIsJournalOpen(false)}
-        readings={savedReadings}
-        onDeleteReading={handleDeleteReading}
-        onClearAll={handleClearAllReadings}
-      />
+      {/* Offline Download & App Install Modal */}
+      {isDownloadOpen && (
+        <OfflineDownloadModal
+          isOpen={isDownloadOpen}
+          onClose={() => setIsDownloadOpen(false)}
+          mines={mines}
+          readings={savedReadings}
+        />
+      )}
     </div>
   );
 }

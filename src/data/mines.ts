@@ -1863,4 +1863,42 @@ export const SPREAD_DEFINITIONS = [
       },
     ],
   },
+  {
+    id: 'titanessFuture5',
+    name: 'Future-Forecasting Titaness Spread (What’s Coming)',
+    cardCount: 5,
+    description: 'Specialized 5-position prophetic spread invoked when asking "what’s coming?" rather than "what is." Charts the Mine of the Present, Fault Line of Change, Vein of Opportunity, Cathedral of Endings, and the Hydra Path Timeline.',
+    positions: [
+      {
+        id: 'mine_present',
+        name: '1. Mine of the Present',
+        description: 'Titaness current emotional & mineral state and present geomantic pattern.',
+        strataDepth: 'Upper Mantle / Present Seam',
+      },
+      {
+        id: 'fault_line_change',
+        name: '2. Fault Line of Change',
+        description: 'Sacred geometric motion (triangle/spiral/grid) showing how change moves through your life.',
+        strataDepth: 'Tectonic Shear Zone (1,500m)',
+      },
+      {
+        id: 'vein_opportunity',
+        name: '3. Vein of Opportunity',
+        description: 'Geomantic breakthrough (Fortuna Major / Caput Draconis / Via) where growth is most likely.',
+        strataDepth: 'Hydrothermal Gold/Emerald Seam (2,800m)',
+      },
+      {
+        id: 'cathedral_endings',
+        name: '4. Cathedral of Endings',
+        description: 'Geomantic completion (Cauda Draconis / Carcer / Tristitia) revealing what is closing.',
+        strataDepth: 'Ancient Salt Vault / Subterranean Tomb (3,400m)',
+      },
+      {
+        id: 'hydra_path_timeline',
+        name: '5. Hydra Path (Timeline)',
+        description: 'Planetary time frame derived from the main figure (1–4 weeks, 1–3 months, 2–6 months) narrated by the Titaness.',
+        strataDepth: 'Abyssal Mantle Singularity (4,000m+)',
+      },
+    ],
+  },
 ];

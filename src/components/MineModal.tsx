@@ -1,8 +1,9 @@
 import React from 'react';
 import { WorldMine } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Globe, Layers, Sparkles, Flame, Shield, MapPin, History, Compass, Wand2 } from 'lucide-react';
+import { X, Globe, Layers, Sparkles, Flame, Shield, MapPin, History, Compass, Wand2, Trees, Activity, HeartCrack, Zap, CircleDot, Compass as CompassIcon, Feather } from 'lucide-react';
 import { CartographicFigureSvg } from './CartographicFigureSvg';
+import { generateTitaness } from '../utils/titanessEngine';
 
 interface MineModalProps {
   mine: WorldMine | null;
@@ -12,6 +13,12 @@ interface MineModalProps {
 
 export const MineModal: React.FC<MineModalProps> = ({ mine, onClose, onSelectForReading }) => {
   if (!mine) return null;
+
+  const titaness = mine.titaness || generateTitaness({
+    mineral: mine.primaryMineral,
+    region: mine.location || mine.country,
+    depth: mine.depthMeters,
+  });
 
   return (
     <AnimatePresence>
@@ -70,6 +77,102 @@ export const MineModal: React.FC<MineModalProps> = ({ mine, onClose, onSelectFor
           {/* ANTHROPOMORPHIC CARTOGRAPHIC WOMAN FIGURE PLATE */}
           <div className="mb-6">
             <CartographicFigureSvg mine={mine} />
+          </div>
+
+          {/* TITANESS GENERATION ENGINE CARD */}
+          <div className="mb-6 bg-gradient-to-br from-amber-950/40 via-stone-900/90 to-stone-950 border border-amber-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-3 pb-3 border-b border-amber-500/20">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-serif font-bold text-base">
+                  ᛏ
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-amber-400/80 block">
+                    Personified Subterranean Spirit
+                  </span>
+                  <h3 className="text-lg font-serif font-bold text-amber-100">
+                    {titaness.name}
+                  </h3>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-serif font-semibold tracking-wide">
+                {titaness.archetype}
+              </span>
+            </div>
+
+            {/* Correspondences Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 text-xs font-serif">
+              <div className="bg-stone-950/70 border border-stone-800 rounded-xl p-2.5">
+                <span className="text-[10px] text-stone-500 font-mono block uppercase">Rune Matrix</span>
+                <span className="text-sm font-bold text-amber-200 mt-0.5 block flex items-center gap-1.5">
+                  <span className="text-amber-400 font-mono">ᚱ</span> {titaness.rune}
+                </span>
+              </div>
+              <div className="bg-stone-950/70 border border-stone-800 rounded-xl p-2.5">
+                <span className="text-[10px] text-stone-500 font-mono block uppercase">Geomantic Sign</span>
+                <span className="text-sm font-bold text-amber-200 mt-0.5 block flex items-center gap-1.5">
+                  <span className="text-amber-400 font-mono">⚚</span> {titaness.geomantic}
+                </span>
+              </div>
+              <div className="bg-stone-950/70 border border-stone-800 rounded-xl p-2.5">
+                <span className="text-[10px] text-stone-500 font-mono block uppercase">Sacred Tree</span>
+                <span className="text-sm font-bold text-emerald-300 mt-0.5 block flex items-center gap-1.5">
+                  <Trees className="w-3.5 h-3.5 text-emerald-400" /> {titaness.tree}
+                </span>
+              </div>
+              <div className="bg-stone-950/70 border border-stone-800 rounded-xl p-2.5">
+                <span className="text-[10px] text-stone-500 font-mono block uppercase">Elemental Blend</span>
+                <span className="text-sm font-bold text-cyan-300 mt-0.5 block flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-cyan-400" /> {titaness.element}
+                </span>
+              </div>
+            </div>
+
+            {/* Sacred Wound */}
+            <div className="bg-rose-950/30 border border-rose-800/40 rounded-xl p-3 mb-4 flex items-start gap-2.5">
+              <HeartCrack className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-rose-400 block font-semibold">
+                  Subterranean Wound & Shadow Strain
+                </span>
+                <p className="text-xs text-rose-200/90 font-serif mt-0.5">
+                  {titaness.wound}
+                </p>
+              </div>
+            </div>
+
+            {/* 3-Fold Titaness Cures */}
+            <div>
+              <span className="text-[11px] font-serif uppercase tracking-widest text-amber-400/90 font-bold block mb-2">
+                The Three-Fold Chthonic Cures
+              </span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                <div className="bg-stone-950/80 border border-amber-600/30 rounded-xl p-3">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 block flex items-center gap-1 font-semibold mb-1">
+                    <Zap className="w-3 h-3 text-amber-400" /> Literal Cure
+                  </span>
+                  <p className="text-xs text-stone-200 font-serif leading-relaxed">
+                    {titaness.cures.literal}
+                  </p>
+                </div>
+                <div className="bg-stone-950/80 border border-purple-600/30 rounded-xl p-3">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400 block flex items-center gap-1 font-semibold mb-1">
+                    <Sparkles className="w-3 h-3 text-purple-400" /> Symbolic Cure
+                  </span>
+                  <p className="text-xs text-stone-200 font-serif leading-relaxed">
+                    {titaness.cures.symbolic}
+                  </p>
+                </div>
+                <div className="bg-stone-950/80 border border-cyan-600/30 rounded-xl p-3">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 block flex items-center gap-1 font-semibold mb-1">
+                    <CircleDot className="w-3 h-3 text-cyan-400" /> Geometric Cure
+                  </span>
+                  <p className="text-xs text-stone-200 font-serif leading-relaxed">
+                    {titaness.cures.geometric}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Key Metrics Grid */}

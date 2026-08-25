@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { WorldMine, CastStone, ElementalAffinity } from '../types';
-import { WORLD_MINES } from '../data/mines';
 import { mapCoordsToLatLng, findNearestMine } from '../utils/geo';
 import { sound } from '../utils/audio';
 import { motion, AnimatePresence } from 'motion/react';
@@ -19,6 +18,7 @@ import {
 } from 'lucide-react';
 
 interface LithicScatterProps {
+  mines: WorldMine[];
   onCommuneWithSpread: (mines: WorldMine[]) => void;
   onOpenMineModal: (mine: WorldMine) => void;
 }
@@ -34,6 +34,7 @@ const AVAILABLE_STONES = [
 ];
 
 export const LithicScatter: React.FC<LithicScatterProps> = ({
+  mines,
   onCommuneWithSpread,
   onOpenMineModal,
 }) => {
@@ -55,222 +56,221 @@ export const LithicScatter: React.FC<LithicScatterProps> = ({
         const x = 0.15 + Math.random() * 0.7;
         const y = 0.2 + Math.random() * 0.6;
         const { lat, lng } = mapCoordsToLatLng(x, y);
-        const { mine, distanceKm } = findNearestMine(lat, lng, WORLD_MINES);
+        const { mine, distanceKm } = findNearestMine(lat, lng, mines);
 
         return {
-          ...s,
+          id: `${s.id}-${Date.now()}`,
+          name: s.name,
+          color: s.color,
+          element: s.element,
           x,
           y,
           nearestMine: mine,
-          distanceKm,
+          distanceKm: Math.round(distanceKm),
         };
       });
 
       setCastStones(casted);
       setIsCasting(false);
       setHasCast(true);
-      sound.playMineralClink();
-      confetti({
-        particleCount: 35,
-        spread: 50,
-        origin: { y: 0.5 },
-        colors: ['#a855f7', '#eab308', '#10b981', '#38bdf8'],
-      });
+      sound.playChime();
+
+      try {
+        confetti({
+          particleCount: 25,
+          spread: 40,
+          origin: { y: 0.6 },
+          colors: ['#f59e0b', '#fbbf24', '#d97706'],
+        });
+      } catch (e) {}
     }, 900);
   };
 
-  const getUniqueMines = (): WorldMine[] => {
-    const map = new Map<string, WorldMine>();
-    castStones.forEach((cs) => {
-      if (cs.nearestMine) {
-        map.set(cs.nearestMine.id, cs.nearestMine);
-      }
-    });
-    return Array.from(map.values());
-  };
-
-  const handleTransferToOracle = () => {
-    const mines = getUniqueMines();
-    if (mines.length > 0) {
-      onCommuneWithSpread(mines);
-    }
+  const handleCommuneAll = () => {
+    const matchedMines = castStones.map((cs) => cs.nearestMine);
+    onCommuneWithSpread(matchedMines);
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/50 border border-amber-500/30 text-amber-300 text-xs font-serif mb-3">
           <Layers className="w-3.5 h-3.5" />
-          <span>Lithic Casting Divination</span>
+          <span>Lithomancy & Planetary Triangulation</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-100 mb-2">
-          The Lithic Scatter Plate
+          The Lithic Scatter
         </h1>
         <p className="text-sm sm:text-base text-stone-400 font-serif leading-relaxed">
-          Toss raw mineral crystals across the antique cartographic plate. Where they land, their
-          crystalline resonance draws upon the nearest subterranean feminine titaness and mineral
-          faults to reveal your current alignment.
+          Cast raw mineral stones upon the geodetic plate. Where they land, their magnetic field
+          triangulates with the closest subterranean mine in our global catalog of {mines.length.toLocaleString()} locations.
         </p>
       </div>
 
-      {/* Casting Plate Arena */}
+      {/* Main Casting Board & Results */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left: Interactive Casting Plate */}
-        <div className="lg:col-span-8 bg-stone-950/90 border border-amber-950/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col items-center">
-          {/* Antique Plate Background & Circular Mandala */}
-          <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#b45309_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
-          <div className="absolute inset-4 border border-amber-600/30 rounded-2xl pointer-events-none" />
+        {/* Left: Interactive Casting Canvas */}
+        <div className="lg:col-span-7 bg-stone-950/90 border border-amber-950/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[480px]">
+          {/* Subtle Grid */}
+          <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:24px_24px]" />
 
-          {/* Cast Canvas */}
-          <div className="relative w-full aspect-square max-w-[540px] bg-stone-900/40 rounded-full border-2 border-amber-600/40 shadow-2xl flex items-center justify-center overflow-hidden my-4">
-            {/* Concentric Ley Rings */}
-            <div className="absolute inset-8 rounded-full border border-amber-500/20" />
-            <div className="absolute inset-16 rounded-full border border-amber-500/15" />
-            <div className="absolute inset-28 rounded-full border border-amber-500/10" />
+          {/* Canvas Top Bar */}
+          <div className="flex items-center justify-between text-xs font-serif text-stone-400 mb-4 z-10">
+            <span className="text-amber-400 font-bold uppercase tracking-wider text-[10px]">
+              Tectonic Scatter Surface
+            </span>
+            <span className="font-mono text-stone-500 text-[11px]">
+              Active Seam: {mines.length.toLocaleString()} Mines
+            </span>
+          </div>
 
-            {/* Cross Hairs */}
-            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#78350f" strokeWidth="1" strokeDasharray="4 4" className="absolute w-full" />
-            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#78350f" strokeWidth="1" strokeDasharray="4 4" className="absolute h-full" />
-
-            {/* Connecting Ley Lines between cast stones */}
-            {hasCast && castStones.length > 1 && (
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                {castStones.map((stone, idx) => {
-                  const next = castStones[(idx + 1) % castStones.length];
-                  return (
-                    <line
-                      key={idx}
-                      x1={`${stone.x * 100}%`}
-                      y1={`${stone.y * 100}%`}
-                      x2={`${next.x * 100}%`}
-                      y2={`${next.y * 100}%`}
-                      stroke={stone.color}
-                      strokeWidth="1.5"
-                      strokeDasharray="4 3"
-                      opacity="0.6"
-                    />
-                  );
-                })}
-              </svg>
-            )}
-
-            {/* Casted Mineral Stones */}
-            {castStones.map((stone, idx) => (
-              <motion.div
-                key={stone.id + idx}
-                initial={{ scale: 0, y: -80, opacity: 0 }}
-                animate={{ scale: 1, y: 0, opacity: 1 }}
-                transition={{ type: 'spring', damping: 12, delay: idx * 0.1 }}
-                style={{ left: `${stone.x * 100}%`, top: `${stone.y * 100}%` }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-30"
-              >
-                {/* Glow */}
-                <div
-                  className="absolute -inset-3 rounded-full blur-md opacity-60 animate-pulse"
-                  style={{ backgroundColor: stone.color }}
-                />
-
-                {/* Crystal Stone Token */}
-                <div
-                  className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-serif font-bold text-stone-950 shadow-xl transition-transform hover:scale-125"
-                  style={{ backgroundColor: stone.color }}
-                >
-                  {stone.name[0]}
-                </div>
-
-                {/* Label */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-0.5 rounded bg-stone-950/90 border border-stone-800 text-[10px] font-mono text-stone-300 whitespace-nowrap pointer-events-none">
-                  {stone.name}
-                </div>
-              </motion.div>
-            ))}
+          {/* The Plate Surface */}
+          <div className="relative flex-1 w-full bg-stone-900/40 rounded-2xl border border-stone-800/80 overflow-hidden shadow-inner flex items-center justify-center min-h-[340px]">
+            {/* Ambient Concentric Ley Rings */}
+            <div className="absolute w-72 h-72 rounded-full border border-amber-500/10 pointer-events-none" />
+            <div className="absolute w-48 h-48 rounded-full border border-amber-500/20 pointer-events-none" />
+            <div className="absolute w-24 h-24 rounded-full border border-amber-500/30 pointer-events-none" />
 
             {!hasCast && !isCasting && (
-              <div className="text-center z-10 p-6 pointer-events-none">
-                <Compass className="w-12 h-12 text-amber-500/50 mx-auto mb-2 animate-spin-slow" />
-                <p className="text-sm font-serif text-amber-300/80 uppercase tracking-widest">
-                  The Lithic Casting Plate is Silent
+              <div className="text-center p-6 z-10">
+                <Compass className="w-12 h-12 text-amber-500/40 mx-auto mb-3 animate-spin-slow" />
+                <p className="text-sm font-serif text-stone-300">
+                  The casting circle is consecrated and waiting.
                 </p>
-                <p className="text-xs text-stone-500 mt-1 font-serif">
-                  Cast the sacred mineral stones to discover which deep seams answer.
+                <p className="text-xs text-stone-500 font-serif mt-1">
+                  Click the button below to cast the mineral stones across the earth.
                 </p>
               </div>
             )}
+
+            {isCasting && (
+              <div className="text-center p-6 z-10 animate-pulse">
+                <Sparkles className="w-10 h-10 text-amber-400 mx-auto mb-3" />
+                <p className="text-sm font-serif text-amber-300 font-semibold">
+                  Tossing stones upon subterranean ley lines...
+                </p>
+              </div>
+            )}
+
+            {/* Rendered Cast Stones on the Plate */}
+            {hasCast &&
+              !isCasting &&
+              castStones.map((cs) => (
+                <motion.div
+                  key={cs.id}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', damping: 12 }}
+                  style={{ left: `${cs.x * 100}%`, top: `${cs.y * 100}%` }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20"
+                  onClick={() => onOpenMineModal(cs.nearestMine)}
+                >
+                  {/* Glowing Pulse Aura */}
+                  <div
+                    className="absolute -inset-2 rounded-full blur-md opacity-60 group-hover:opacity-100 transition-opacity"
+                    style={{ backgroundColor: cs.color }}
+                  />
+
+                  {/* Stone Geometry */}
+                  <div
+                    className="w-5 h-5 rounded-full border-2 border-white shadow-xl flex items-center justify-center transform group-hover:scale-125 transition-transform"
+                    style={{ backgroundColor: cs.color }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-stone-950" />
+                  </div>
+
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-44 bg-stone-950/95 border border-amber-500/50 rounded-xl p-2 shadow-2xl pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity text-center">
+                    <p className="text-[10px] font-serif font-bold text-amber-300">{cs.name}</p>
+                    <p className="text-xs font-serif text-stone-200 mt-0.5">
+                      → {cs.nearestMine.name}
+                    </p>
+                    <p className="text-[10px] text-stone-400 font-mono">
+                      {cs.distanceKm} km away
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
           </div>
 
-          {/* Cast Controls */}
-          <div className="mt-4 flex items-center gap-4">
+          {/* Cast Action Button */}
+          <div className="mt-6 flex items-center justify-between gap-4">
             <button
               onClick={handleCastStones}
               disabled={isCasting}
-              className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-serif font-bold text-sm tracking-widest uppercase transition-all shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95 flex items-center gap-2.5 disabled:opacity-50"
+              className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-serif font-bold text-sm uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(245,158,11,0.3)] hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4 text-stone-950" />
-              {isCasting ? 'Casting Crystals...' : hasCast ? 'Re-Cast Stones' : 'Cast Lithic Stones'}
+              <Sparkles className="w-4 h-4" />
+              <span>{hasCast ? 'Recast Lithic Stones' : 'Cast Stones Upon Earth'}</span>
             </button>
           </div>
         </div>
 
-        {/* Right: Lithic Resonance Readings & Intersecting Mine Spirits */}
-        <div className="lg:col-span-4 flex flex-col gap-4">
-          <div className="bg-stone-900/60 border border-stone-800/80 rounded-3xl p-6 shadow-2xl">
-            <h3 className="text-xs font-serif uppercase tracking-widest text-amber-400 font-bold mb-4 flex items-center gap-2">
-              <Compass className="w-4 h-4" />
-              Lithic Scatter Alignments
-            </h3>
+        {/* Right: Triangulation Readings */}
+        <div className="lg:col-span-5 flex flex-col gap-4">
+          <div className="bg-stone-900/60 border border-stone-800/80 rounded-3xl p-6 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-800 mb-4">
+              <div>
+                <h3 className="text-lg font-serif font-bold text-stone-100">
+                  Triangulated Subterranean Seams
+                </h3>
+                <p className="text-xs text-stone-400 font-serif">
+                  {hasCast
+                    ? `${castStones.length} mines awakened by lithic resonance`
+                    : 'Awaiting stone cast...'}
+                </p>
+              </div>
+            </div>
 
             {hasCast ? (
-              <div className="space-y-4">
+              <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
                 {castStones.map((cs, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-2xl bg-stone-950/80 border border-stone-800 hover:border-amber-500/40 transition-colors"
+                    className="p-3.5 rounded-2xl bg-stone-950/80 border border-stone-800 hover:border-amber-500/40 transition-colors flex items-center justify-between gap-3 group"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-serif font-bold flex items-center gap-1.5" style={{ color: cs.color }}>
-                        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: cs.color }} />
-                        {cs.name} ({cs.element})
-                      </span>
-                      <span className="text-[10px] font-mono text-stone-400">
-                        {cs.distanceKm} km
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-3.5 h-3.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: cs.color }}
+                      />
+                      <div>
+                        <p className="text-xs font-serif font-bold text-stone-200 group-hover:text-amber-300 transition-colors">
+                          {cs.nearestMine.name}
+                        </p>
+                        <p className="text-[11px] text-stone-400 font-serif">
+                          {cs.nearestMine.country} · {cs.nearestMine.primaryMineral}
+                        </p>
+                        <p className="text-[10px] text-stone-500 font-mono">
+                          {cs.name} ({cs.element}) · {cs.distanceKm} km from impact
+                        </p>
+                      </div>
                     </div>
 
-                    {cs.nearestMine && (
-                      <div className="mt-1.5 pl-3 border-l-2 border-stone-800 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-serif font-semibold text-stone-200">
-                            {cs.nearestMine.name}
-                          </p>
-                          <p className="text-[10px] text-amber-400 font-serif italic">
-                            "{cs.nearestMine.feminineArchetype}"
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => onOpenMineModal(cs.nearestMine!)}
-                          className="text-[10px] text-stone-400 hover:text-amber-300 underline font-mono ml-2"
-                        >
-                          View Lore
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => onOpenMineModal(cs.nearestMine)}
+                      className="p-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-300 hover:text-white transition-colors"
+                      title="Inspect Mine"
+                    >
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 ))}
 
-                {/* Transfer to Oracle Button */}
                 <button
-                  onClick={handleTransferToOracle}
-                  className="w-full mt-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:scale-105 flex items-center justify-center gap-2"
+                  onClick={handleCommuneAll}
+                  className="w-full mt-4 py-3 rounded-2xl bg-amber-500/20 border border-amber-500/50 hover:bg-amber-500/30 text-amber-300 font-serif font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" /> Channel in Oracle Chamber
+                  <Sparkles className="w-4 h-4" />
+                  <span>Commune with All Triangulated Mines in Oracle</span>
                 </button>
               </div>
             ) : (
-              <p className="text-xs text-stone-400 font-serif leading-relaxed">
-                When you cast the stones, this panel will calculate their geometric triangulation
-                with the world's most resonant mineral seams and feminine spirits.
-              </p>
+              <div className="p-8 text-center text-stone-500 font-serif text-xs">
+                Cast the mineral stones on the left plate to calculate the nearest world mines and
+                their alchemical resonance.
+              </div>
             )}
           </div>
         </div>

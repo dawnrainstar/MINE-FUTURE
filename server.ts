@@ -36,6 +36,88 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "Subterranea World Mines Oracle" });
 });
 
+// Deterministic Chthonic Prophecy Generator (fallback during API outages/503 spikes)
+function generateChthonicFallbackReading(params: {
+  drawnMines: any[];
+  question?: string;
+  spreadType?: string;
+  targetFutureDate?: string;
+  timeHorizon?: string;
+  scatterContext?: string;
+}) {
+  const { drawnMines, question, spreadType, targetFutureDate, timeHorizon } = params;
+  const leadMine = drawnMines[0]?.mine || {};
+  const midMine = drawnMines[Math.floor(drawnMines.length / 2)]?.mine || leadMine;
+  const outcomeMine = drawnMines[drawnMines.length - 1]?.mine || leadMine;
+
+  const targetDateLabel = targetFutureDate || "the appointed season";
+  const horizonLabel = timeHorizon || "Medium Horizon";
+
+  const strataInterpretations = drawnMines.map((item: any, idx: number) => {
+    const m = item.mine;
+    const isUpright = item.isUpright;
+    const posName = item.positionName || `Strata Seam ${idx + 1}`;
+    return {
+      position: posName,
+      mineName: m.name || `Ancient Seam ${idx + 1}`,
+      mineralSignificance: `${m.primaryMineral || "Native Ore"} (${m.mineralCategory || "Precious Ore"}) governed by ${m.feminineArchetype || "The Earth Mother"} at depth -${m.depthMeters || 1000}m anchors the subterranean current of ${m.chthonicKeyword || "transformation"}.`,
+      revelation: isUpright
+        ? (m.uprightMeaning || "Open vein of abundance and clear mineral transmission.")
+        : (m.invertedMeaning || "Deep tectonic pressure requiring patience and inner grounding before extraction."),
+    };
+  });
+
+  return {
+    oracularTitle: `The Prophecy of the ${leadMine.primaryMineral || "Golden"} Seam`,
+    mantleStrophe: `By ${targetDateLabel}, ancient stone will yield its core,\nThe subterranean mantle speaks what lies in store;\nThrough ${leadMine.name || "deep earth"} the sacred geometry flows,\nTo manifest above what the date's alignment shows.`,
+    targetFutureDate: targetDateLabel,
+    timeHorizon: horizonLabel,
+    strataInterpretations,
+    tectonicSynthesis: `Everything in this prophecy is mathematically and geologically determined by the sacred geometry of ${targetDateLabel}. The orbital station of this date aligns with the subterranean coordinates of ${leadMine.name || "the prime seam"} (${leadMine.location || "Earth Mantle"}). As the calendar advances toward ${targetDateLabel}, the hydrothermal pressure of ${leadMine.primaryMineral || "precious ore"} forms a golden-ratio vector that unlocks your situation. In this clear unfolding narrative, the physical and emotional resistance you have endured is reaching its natural geological crystallization point. You are stepping out of the chaotic silt and anchoring directly into the bedrock reality of your purpose.`,
+    futurePrediction: {
+      manifestEvent: `On or by ${targetDateLabel}, a concrete and tangible breakthrough aligned with ${leadMine.primaryMineral || "crystalline"} precision will physically crystallize, opening an unmistakable new path forward.`,
+      dissolvingObstacle: `The lingering doubts, outdated ties, and structural blockages that previously held you back will completely dissolve under the geothermal pressure of ${outcomeMine.name || "the deep mantle"}.`,
+      pivotalChoicePoint: `A critical threshold will appear where you must decisively choose between staying in safe shallow strata or boring boldly into your authentic sovereign power.`,
+      longTermOutcome: `Permanent elevation into sovereign clarity, grounded in the enduring frequency of ${outcomeMine.primaryMineral || "noble mineral bedrock"}.`,
+    },
+    chthonicPrescription: {
+      prescribedMinerals: [
+        {
+          name: `Raw ${leadMine.primaryMineral || "Malachite or Pyrite"}`,
+          action: `Keep close to your sleep altar or workspace as ${targetDateLabel} approaches.`,
+          resonance: `Calibrates your energetic field to ${leadMine.chthonicKeyword || "inner truth"} and anchors the date's geometric resonance.`,
+        },
+        {
+          name: `Grounding Hematite or Black Tourmaline`,
+          action: `Carry in your pocket during pivotal negotiations or difficult transitions.`,
+          resonance: `Creates an electromagnetic shield against volatile external turbulence.`,
+        },
+      ],
+      groundingRitual: `At the turning of the upcoming moon, place a flat river stone in water with rock salt, write your core intention on parchment, and place it beneath the earth to anchor this timeline.`,
+      mantleRemedy: `Practice daily mantle breathwork: Inhale 4 counts drawing deep earth stillness, hold 8 counts settling the core, and exhale 2 counts releasing mental tension.`,
+      temporalMilestones: [
+        {
+          timeframe: `Phase 1: Initial Borehole (First Weeks)`,
+          guidance: `Clear away superficial distractions and fortify your energetic boundaries.`,
+        },
+        {
+          timeframe: `Phase 2: Thermal Midpoint (Midway to ${targetDateLabel})`,
+          guidance: `Expect seismic friction or testing; hold your ground and trust the mineral core.`,
+        },
+        {
+          timeframe: `Phase 3: Bedrock Harvest (${targetDateLabel})`,
+          guidance: `Celebrate the crystallization of your effort and securely integrate your gains.`,
+        },
+      ],
+    },
+    environmentalWarning: `The extraction operations around ${leadMine.name || "this subterranean seam"} have caused acute ecological distress, fracturing the surrounding bedrock, disrupting native aquifer flows, and scarring the ancient geological mantle.`,
+    whyMiningMustStop: `The seam is over-pressurized and the mineral lattice is fracturing. The land cannot sustain further industrial extraction without permanent destabilization of the regional geomantic field.`,
+    earthMandate: `Shift from extraction to stewardship: Protect this seam, honor the living earth beneath your feet, and cease extracting more than what is freely yielded.`,
+    shadowVein: `Beware of attempting premature extraction before the ore body has fully cooled and stabilized.`,
+    chthonicMandate: `Hold firmly to the bedrock truth of who you are, and let all superficial silt wash away.`,
+  };
+}
+
 // Chthonic Oracle Reading Endpoint with Future Prediction & Prescription
 app.post("/api/oracle/read", async (req, res) => {
   try {
@@ -45,13 +127,11 @@ app.post("/api/oracle/read", async (req, res) => {
       return res.status(400).json({ error: "No drawn mines provided for the reading." });
     }
 
-    const ai = getGeminiClient();
-
     const minesDescription = drawnMines
       .map((item: any, idx: number) => {
         const m = item.mine;
         return `[Position ${idx + 1}: ${item.positionName || "Seam"}]
-- Mine: ${m.name} (${m.location}, ${m.country})
+- Mine: ${m.name} (${m.location}, ${m.country}) [Coordinates: Lat ${m.latitude || m.lat || 0}°, Lng ${m.longitude || m.lng || 0}°]
 - Feminine Cartographic Spirit: "${m.feminineArchetype}" (${m.cartoucheTitle})
 - Anthropomorphic Cartography: ${m.cartographicFigure}
 - Mineral & Archetype: ${m.primaryMineral} (${m.mineralCategory}) — "${m.arcanaArchetype}"
@@ -64,10 +144,12 @@ app.post("/api/oracle/read", async (req, res) => {
       })
       .join("\n\n");
 
-    const prompt = `You are the Chthonic Oracle of Subterranea — the ancient prophetic voice of the Earth's mantle, antique anthropomorphic cartography, and the world's most legendary excavations.
-In this realm of sacred Renaissance cartography, each world mine is the living silhouette and anatomical spirit of an ancient woman / titaness / mineral nymph (such as Aurata Queen of the 4,000-Meter Mantle, Cuprina of Bingham Canyon, Sedna Lucida of the Arctic Permafrost, or Hydrargyra of the Quicksilver Seams).
+    const prompt = `You are the Chthonic Oracle of Subterranea — the prophetic voice of the Earth's mantle, antique anthropomorphic cartography, and sacred geometry.
 
-The seeker has asked the oracle to predict the future and prescribe an earthly remedy for this specific future date / timeline horizon:
+CRITICAL DIRECTIVES:
+1. EVERYTHING IS DETERMINED BY THE GEOMETRY OF THE DATE: The target future date ("${targetFutureDate || "The Unfolding Future"}") establishes the astronomical solar angle, planetary station, and geometric vector (spiral, triangle, hexagon, crossroads, or solar enclosure). Explicitly explain in your prophecy how the geometry of this exact date mathematically and energetically aligns with the drawn mine coordinates, mineral crystallizations, and the seeker's destiny.
+2. THE PROPHECY MUST BE CLEAR, VIVID, AND NARRATIVE: Speak with absolute narrative clarity, storytelling warmth, and poetic authority. Avoid vague or repetitive generalities. Tell the seeker an evocative, structured story of what is currently unfolding, how the geological pressure is building, and the exact sequence of events leading up to ${targetFutureDate || "the target date"}.
+
 - Target Date: "${targetFutureDate || "The Unfolding Future"}"
 - Time Horizon: "${timeHorizon || "Medium Horizon"}"
 - Seeker's Inquiry: "${question || "What future events, tectonic shifts, and mineral transformations will manifest by this date?"}"
@@ -90,11 +172,11 @@ Return your response strictly in valid JSON format matching this schema:
     {
       "position": "Position Name",
       "mineName": "Name of Mine",
-      "mineralSignificance": "1-2 sentences on how this mine's personified feminine spirit, specific mineral, depth, and cartography reflect this position and future timeline",
-      "revelation": "Direct, illuminating interpretation for the seeker's inquiry and future milestone"
+      "mineralSignificance": "1-2 sentences on how this mine's personified feminine spirit, specific mineral, depth, coordinates, and sacred date geometry reflect this position and future timeline",
+      "revelation": "Direct, illuminating, narrative interpretation for the seeker's inquiry and future milestone"
     }
   ],
-  "tectonicSynthesis": "A rich, multi-paragraph synthesis weaving the feminine cartographic archetypes, mineral energies, depths, and geographic fault lines into a unified prophecy for the seeker's target future date.",
+  "tectonicSynthesis": "A vivid, compelling, multi-paragraph narrative prophecy detailing how the geometry of ${targetFutureDate || "the target date"} unlocks the fault lines and mineral veins, telling the complete story of what will unfold.",
   "futurePrediction": {
     "manifestEvent": "What concrete, visible event, breakthrough, or external reality will crystallize on or by the target future date?",
     "dissolvingObstacle": "What fossilized blockage, obsolete structure, or hidden resistance will dissolve or be washed away by the earth?",
@@ -115,7 +197,7 @@ Return your response strictly in valid JSON format matching this schema:
       }
     ],
     "groundingRitual": "A detailed, visceral, sacred earthly practice to perform (e.g. walking barefoot on clay, salt water bath, lighting a candle near raw iron, writing intentions on stone).",
-    "mantleRemedy": "An alchemical psychological and lifestyle remedy to regulate inner pressure and heat as this timeline unfolds.",
+    "mantleRemedy": "A specific breathwork pattern (e.g. Inhale 4, hold 8, exhale 2 counts) and grounding method to regulate inner pressure.",
     "temporalMilestones": [
       {
         "timeframe": "Early Phase / Initial Seam",
@@ -131,39 +213,77 @@ Return your response strictly in valid JSON format matching this schema:
       }
     ]
   },
-  "shadowVein": "What hidden risk, unacknowledged pressure, or subterranean shadow must the seeker heed?",
-  "chthonicMandate": "A concise, powerful closing directive from the Earth's core."
+  "environmentalWarning": "Describe the ecological stress, extraction wounds, groundwater contamination, habitat disruption, or mantle imbalance occurring at this chosen mine.",
+  "whyMiningMustStop": "A clear, mystical yet visceral explanation of why extraction at this mine is harmful and must cease (e.g. 'The seam is over-pressurized', 'The Titaness is in distress', 'The rare earth lattice is fracturing', 'The land cannot sustain further extraction').",
+  "earthMandate": "A directive from the Earth for protection, restoration, or stewardship (e.g. 'Protect this seam', 'Cease extraction', 'Restore the land', 'Shift from extraction to stewardship').",
+  "shadowVein": "What hidden risk, unacknowledged pressure, or subterranean shadow caution must the seeker heed?",
+  "chthonicMandate": "One directive the user must align with to succeed."
 }`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.7-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
+    // Try AI generation across models with intelligent retry & graceful fallback
+    const candidateModels = ["gemini-3.1-flash-lite", "gemini-3.7-flash", "gemini-flash-latest"];
+    let parsed = null;
 
-    const responseText = response.text || "{}";
-    let parsed;
     try {
-      parsed = JSON.parse(responseText);
-    } catch {
-      parsed = {
-        oracularTitle: "The Voice of the Deep Mantle",
-        mantleStrophe: "From deepest stone and molten core,\nThe earth uncovers what you search for.",
-        tectonicSynthesis: responseText,
-        shadowVein: "Be mindful of internal pressures left unvented.",
-        chthonicMandate: "Ground your intentions in tangible reality.",
-        strataInterpretations: [],
-      };
+      const ai = getGeminiClient();
+      for (const model of candidateModels) {
+        try {
+          const response = await ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+              responseMimeType: "application/json",
+            },
+          });
+
+          const responseText = response.text || "{}";
+          try {
+            parsed = JSON.parse(responseText);
+            if (parsed && parsed.oracularTitle) {
+              break; // Successfully generated and parsed
+            }
+          } catch {
+            parsed = null;
+          }
+        } catch (modelErr: any) {
+          const isHighDemand = modelErr?.status === 503 || modelErr?.message?.includes("503") || modelErr?.message?.includes("high demand");
+          if (isHighDemand) {
+            console.log(`Model ${model} is experiencing temporary high demand (503). Cascading to next candidate...`);
+            // Brief 400ms pause to let transient spikes settle
+            await new Promise((resolve) => setTimeout(resolve, 400));
+          } else {
+            console.log(`Model ${model} unavailable (${modelErr?.message || "transient error"}). Trying next candidate...`);
+          }
+        }
+      }
+    } catch (clientErr) {
+      console.warn("Gemini client initialization warning:", clientErr);
+    }
+
+    // If all remote AI models are at capacity, use our rich deterministic Chthonic Oracle generator
+    if (!parsed) {
+      parsed = generateChthonicFallbackReading({
+        drawnMines,
+        question,
+        spreadType,
+        targetFutureDate,
+        timeHorizon,
+        scatterContext,
+      });
     }
 
     res.json({ reading: parsed });
   } catch (error: any) {
-    console.error("Oracle reading error:", error);
-    res.status(500).json({
-      error: error.message || "Failed to commune with the subterranean mantle.",
+    console.error("Oracle reading fallback invoked:", error?.message || error);
+    // Absolute safety net so client never gets an unhandled error
+    const fallback = generateChthonicFallbackReading({
+      drawnMines: req.body?.drawnMines || [],
+      question: req.body?.question,
+      spreadType: req.body?.spreadType,
+      targetFutureDate: req.body?.targetFutureDate,
+      timeHorizon: req.body?.timeHorizon,
     });
+    res.json({ reading: fallback });
   }
 });
 

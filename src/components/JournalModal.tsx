@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DivinationReading } from '../types';
+import { exportReadingAsScroll, exportReadingAsHtml, exportReadingAsJson } from '../utils/offlineEngine';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -15,6 +16,10 @@ import {
   Flame,
   ShieldAlert,
   Sparkles,
+  Download,
+  FileText,
+  Printer,
+  FileCode,
 } from 'lucide-react';
 
 interface JournalModalProps {
@@ -36,8 +41,16 @@ export const JournalModal: React.FC<JournalModalProps> = ({
     readings.length > 0 ? readings[0] : null
   );
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [downloadDropdownId, setDownloadDropdownId] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  const handleDownload = (reading: DivinationReading, format: 'txt' | 'html' | 'json') => {
+    if (format === 'txt') exportReadingAsScroll(reading);
+    else if (format === 'html') exportReadingAsHtml(reading);
+    else if (format === 'json') exportReadingAsJson(reading);
+    setDownloadDropdownId(null);
+  };
 
   const handleCopyReading = (reading: DivinationReading) => {
     const text =
@@ -171,7 +184,43 @@ export const JournalModal: React.FC<JournalModalProps> = ({
                         Inquiry: "{selectedReading.question}"
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 relative">
+                      <div className="relative">
+                        <button
+                          onClick={() => setDownloadDropdownId(downloadDropdownId === selectedReading.id ? null : selectedReading.id)}
+                          className="p-2 rounded-xl bg-stone-950 border border-stone-800 hover:border-amber-500/50 text-amber-400 hover:text-amber-300 transition-colors"
+                          title="Download Reading"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+
+                        {downloadDropdownId === selectedReading.id && (
+                          <div className="absolute right-0 top-full mt-2 w-56 bg-stone-950 border border-amber-500/40 rounded-xl p-1.5 shadow-2xl z-30 space-y-1">
+                            <button
+                              onClick={() => handleDownload(selectedReading, 'txt')}
+                              className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-stone-900 text-stone-200 hover:text-amber-200 text-xs font-serif flex items-center gap-2"
+                            >
+                              <FileText className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Text Scroll (.txt)</span>
+                            </button>
+                            <button
+                              onClick={() => handleDownload(selectedReading, 'html')}
+                              className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-stone-900 text-stone-200 hover:text-amber-200 text-xs font-serif flex items-center gap-2"
+                            >
+                              <Printer className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Illuminated HTML (.html)</span>
+                            </button>
+                            <button
+                              onClick={() => handleDownload(selectedReading, 'json')}
+                              className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-stone-900 text-stone-200 hover:text-amber-200 text-xs font-serif flex items-center gap-2"
+                            >
+                              <FileCode className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Prophecy JSON (.json)</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
                       <button
                         onClick={() => handleCopyReading(selectedReading)}
                         className="p-2 rounded-xl bg-stone-950 border border-stone-800 text-stone-300 hover:text-white transition-colors"

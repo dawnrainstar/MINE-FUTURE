@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="60%" stop-color="#1c1917" />
+      <stop offset="100%" stop-color="#0c0a09" />
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGlow)" />
+  <circle cx="256" cy="256" r="210" fill="none" stroke="url(#goldGrad)" stroke-width="6" stroke-dasharray="12 6" opacity="0.6" />
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#d97706" stroke-width="4" opacity="0.8" />
+  
+  <!-- Geomantic Hexagram / Octagram star -->
+  <polygon points="256,76 390,360 122,360" fill="none" stroke="url(#goldGrad)" stroke-width="6" />
+  <polygon points="256,436 122,152 390,152" fill="none" stroke="url(#goldGrad)" stroke-width="6" />
+
+  <!-- Chthonic Crystal Center -->
+  <polygon points="256,160 320,256 256,352 192,256" fill="#d97706" fill-opacity="0.3" stroke="url(#goldGrad)" stroke-width="8" />
+  <circle cx="256" cy="256" r="24" fill="#fbbf24" />
+</svg>

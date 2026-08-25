@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { WorldMine } from '../types';
-import { WORLD_MINES } from '../data/mines';
 import { MineCard } from './MineCard';
 import { sound } from '../utils/audio';
+import { generateTitaness } from '../utils/titanessEngine';
 import {
   BookOpen,
   Search,
@@ -13,17 +13,26 @@ import {
   Compass,
   MapPin,
   Eye,
+  Upload,
 } from 'lucide-react';
 
 interface GrimoireProps {
+  mines: WorldMine[];
   onOpenMineModal: (mine: WorldMine) => void;
   onCommuneWithMine: (mine: WorldMine) => void;
+  onOpenUploader: () => void;
 }
 
-export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWithMine }) => {
+export const Grimoire: React.FC<GrimoireProps> = ({
+  mines,
+  onOpenMineModal,
+  onCommuneWithMine,
+  onOpenUploader,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedMineralCategory, setSelectedMineralCategory] = useState<string>('All');
   const [selectedDepthCategory, setSelectedDepthCategory] = useState<string>('All');
+  const [selectedContinent, setSelectedContinent] = useState<string>('All');
 
   const mineralCategories = [
     'All',
@@ -48,19 +57,38 @@ export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWi
     'Ancient Hydraulic Quarry',
   ];
 
-  const filteredMines = WORLD_MINES.filter((mine) => {
+  const continents = ['All', 'Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania', 'Polar/Antarctica'];
+
+  const filteredMines = mines.filter((mine) => {
     const matchesMineral =
       selectedMineralCategory === 'All' || mine.mineralCategory === selectedMineralCategory;
     const matchesDepth =
       selectedDepthCategory === 'All' || mine.depthCategory === selectedDepthCategory;
-    const matchesSearch =
-      mine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mine.primaryMineral.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mine.feminineArchetype.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mine.chthonicKeyword.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      mine.country.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesContinent =
+      selectedContinent === 'All' || mine.continent === selectedContinent;
+    const q = searchQuery.toLowerCase();
+    
+    const titaness = mine.titaness || generateTitaness({
+      mineral: mine.primaryMineral,
+      region: mine.location || mine.country,
+      depth: mine.depthMeters,
+    });
 
-    return matchesMineral && matchesDepth && matchesSearch;
+    const matchesSearch =
+      !q ||
+      mine.name.toLowerCase().includes(q) ||
+      mine.primaryMineral.toLowerCase().includes(q) ||
+      mine.feminineArchetype.toLowerCase().includes(q) ||
+      mine.chthonicKeyword.toLowerCase().includes(q) ||
+      mine.country.toLowerCase().includes(q) ||
+      titaness.name.toLowerCase().includes(q) ||
+      titaness.archetype.toLowerCase().includes(q) ||
+      titaness.rune.toLowerCase().includes(q) ||
+      titaness.geomantic.toLowerCase().includes(q) ||
+      titaness.tree.toLowerCase().includes(q) ||
+      titaness.wound.toLowerCase().includes(q);
+
+    return matchesMineral && matchesDepth && matchesContinent && matchesSearch;
   });
 
   return (
@@ -75,9 +103,7 @@ export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWi
           Codex of the World Mines
         </h1>
         <p className="text-sm sm:text-base text-stone-400 font-serif leading-relaxed">
-          The complete grimoire of 20 planetary excavations. Every mine is personified as a woman
-          in ancient cartography—bearing the sacred alchemy of deep gold, luminous selenite, cosmic
-          nickel, and volcanic cinnabar.
+          The complete grimoire of {mines.length.toLocaleString()} planetary excavations. Every mine is personified as a subterranean woman in ancient cartography—bearing the sacred alchemy of gold, lithium, luminous selenite, and deep mantle ores.
         </p>
       </div>
 
@@ -90,7 +116,7 @@ export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWi
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by mine, mineral, deity, or arcana keyword..."
+            placeholder={`Search across ${mines.length.toLocaleString()} mines...`}
             className="w-full bg-stone-950/80 border border-stone-800 rounded-xl pl-9 pr-4 py-2 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-amber-500/60 font-serif"
           />
         </div>
@@ -98,13 +124,25 @@ export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWi
         {/* Categories */}
         <div className="flex flex-wrap items-center gap-2">
           <select
+            value={selectedContinent}
+            onChange={(e) => setSelectedContinent(e.target.value)}
+            className="bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-300 font-serif focus:outline-none focus:border-amber-500/60"
+          >
+            {continents.map((c) => (
+              <option key={c} value={c}>
+                {c === 'All' ? 'All Continents' : c}
+              </option>
+            ))}
+          </select>
+
+          <select
             value={selectedMineralCategory}
             onChange={(e) => setSelectedMineralCategory(e.target.value)}
             className="bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-300 font-serif focus:outline-none focus:border-amber-500/60"
           >
-            {mineralCategories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat === 'All' ? 'All Mineral Families' : cat}
+            {mineralCategories.map((c) => (
+              <option key={c} value={c}>
+                {c === 'All' ? 'All Commodities' : c}
               </option>
             ))}
           </select>
@@ -116,53 +154,57 @@ export const Grimoire: React.FC<GrimoireProps> = ({ onOpenMineModal, onCommuneWi
           >
             {depthCategories.map((d) => (
               <option key={d} value={d}>
-                {d === 'All' ? 'All Strata Depths' : d}
+                {d === 'All' ? 'All Depths' : d}
               </option>
             ))}
           </select>
+
+          <button
+            onClick={onOpenUploader}
+            className="px-3 py-2 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs font-serif font-bold flex items-center gap-1.5 hover:bg-amber-900"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload</span>
+          </button>
         </div>
       </div>
 
-      {/* Grid of Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
-        {filteredMines.map((mine) => (
-          <div
-            key={mine.id}
-            className="flex flex-col items-center p-3 rounded-2xl bg-stone-950/50 border border-stone-800/80 hover:border-amber-500/40 transition-colors w-full"
-          >
-            <MineCard
-              mine={mine}
-              isUpright={true}
-              isRevealed={true}
-              size="sm"
-              showDetailsModal={() => onOpenMineModal(mine)}
-            />
-
-            {/* Quick Action bar beneath card */}
-            <div className="w-full mt-3 pt-2 border-t border-stone-800 flex items-center justify-between text-xs px-1">
-              <button
-                onClick={() => onOpenMineModal(mine)}
-                className="text-stone-400 hover:text-amber-300 flex items-center gap-1 font-serif transition-colors"
-              >
-                <Eye className="w-3.5 h-3.5" /> Lore & Plate
-              </button>
-              <button
-                onClick={() => onCommuneWithMine(mine)}
-                className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-serif font-semibold transition-colors"
-              >
-                <Sparkles className="w-3.5 h-3.5" /> Commune
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Active Count */}
+      <div className="flex items-center justify-between mb-4 text-xs font-serif text-stone-400">
+        <span>
+          Showing <strong className="text-amber-400">{filteredMines.length.toLocaleString()}</strong> of {mines.length.toLocaleString()} excavations
+        </span>
       </div>
 
-      {filteredMines.length === 0 && (
-        <div className="text-center py-16">
-          <Mountain className="w-12 h-12 text-stone-600 mx-auto mb-2" />
-          <p className="text-sm font-serif text-stone-400">
-            No subterranean mines match your current filters.
-          </p>
+      {/* Cards Grid */}
+      {filteredMines.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredMines.slice(0, 120).map((mine) => (
+            <div key={mine.id} className="flex flex-col justify-between">
+              <MineCard
+                mine={mine}
+                onSelect={() => onOpenMineModal(mine)}
+              />
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  onClick={() => onOpenMineModal(mine)}
+                  className="flex-1 py-1.5 rounded-xl bg-stone-900 border border-stone-800 hover:border-amber-500/40 text-stone-300 hover:text-white text-xs font-serif flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Eye className="w-3 h-3 text-stone-400" /> Lore & Map
+                </button>
+                <button
+                  onClick={() => onCommuneWithMine(mine)}
+                  className="flex-1 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/40 hover:bg-amber-500/30 text-amber-300 text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-400" /> Commune
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="p-12 text-center bg-stone-900/40 rounded-3xl border border-stone-800 text-stone-400 font-serif">
+          No mines found matching your filters. Try broadening your query.
         </div>
       )}
     </div>

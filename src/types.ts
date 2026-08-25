@@ -31,6 +31,62 @@ export type PlanetaryRuler =
   | 'Neptune'
   | 'Pluto';
 
+export interface TitanessCures {
+  literal: string;
+  symbolic: string;
+  geometric: string;
+}
+
+export interface MineralAspect {
+  name: string;
+  archetype: string;
+  rune: string;
+  geomantic: string;
+  element: string;
+  tree: string;
+  wound: string;
+  cures: TitanessCures;
+}
+
+export interface TitanessProfile {
+  name: string;
+  mineral: string;
+  region: string;
+  depth: number | string;
+  archetype: string;
+  rune: string;
+  geomantic: string;
+  element: string;
+  tree: string;
+  wound: string;
+  cures: TitanessCures;
+}
+
+export interface GeomanticFigureData {
+  name: string;
+  meaning: string;
+  timeFrame: string;
+  advice: string;
+  element?: string;
+  ruler?: string;
+  tetragram?: [1 | 2, 1 | 2, 1 | 2, 1 | 2];
+  geometricMotion?: string;
+}
+
+export interface GeomanticPredictionResult {
+  titaness: string;
+  mineral: string;
+  region: string;
+  figure: string;
+  meaning: string;
+  timeFrame: string;
+  advice: string;
+  tetragram?: [1 | 2, 1 | 2, 1 | 2, 1 | 2];
+  element?: string;
+  ruler?: string;
+  geometricMotion?: string;
+}
+
 export interface WorldMine {
   id: string;
   name: string;
@@ -66,9 +122,10 @@ export interface WorldMine {
   chthonicKeyword: string;
   mineralColor: string; // Hex color for visual glow
   discoveryYear?: string;
+  titaness?: TitanessProfile;
 }
 
-export type SpreadType = 'single' | 'strata3' | 'elemental5' | 'descent4' | 'scatter';
+export type SpreadType = 'single' | 'strata3' | 'elemental5' | 'descent4' | 'titanessFuture5' | 'scatter';
 
 export interface SpreadPositionInfo {
   id: string;
@@ -115,6 +172,9 @@ export interface OracleInterpretation {
       guidance: string;
     }[];
   };
+  environmentalWarning?: string;
+  whyMiningMustStop?: string;
+  earthMandate?: string;
   shadowVein: string;
   chthonicMandate: string;
 }
@@ -140,4 +200,45 @@ export interface CastStone {
   y: number; // 0 to 1 relative to map
   nearestMine?: WorldMine;
   distanceKm?: number;
+}
+
+export interface CommercialSettings {
+  appTitle: string;
+  tagline: string;
+  practitionerName: string;
+  practitionerTitle: string;
+  contactEmail: string;
+  currencySymbol: string;
+  singleReadingPrice: number;
+  bundleReadingPrice: number;
+  monthlyPassPrice: number;
+  stripePaymentLink: string;
+  paypalPaymentLink: string;
+  etsyShopUrl: string;
+  affiliateAmazonTag: string;
+  enablePaywall: boolean;
+  freeDailyReadingsLimit: number;
+}
+
+export interface ClientOrder {
+  id: string;
+  orderNumber: string;
+  createdAt: number;
+  clientName: string;
+  clientEmail?: string;
+  inquiry: string;
+  targetDate: string;
+  spreadType: SpreadType;
+  practitionerNote: string;
+  reading?: DivinationReading;
+  status: 'pending' | 'completed' | 'delivered';
+  pricePaid?: number;
+}
+
+export interface CreditTransaction {
+  id: string;
+  timestamp: number;
+  type: 'purchase' | 'use' | 'bonus';
+  amount: number;
+  description: string;
 }
