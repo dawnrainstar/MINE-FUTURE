@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { WorldMine, DivinationReading, OracleInterpretation } from '../types';
 import { calculateDateGeometry } from '../data/pennickEngine';
 import { WORLD_MINES } from '../data/mines';
 import { formatProphecyText, downloadFile, exportReadingAsHtml } from '../utils/offlineEngine';
+import { MineLocationMap } from './MineLocationMap';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Sparkles,
@@ -19,6 +20,9 @@ import {
   Copy,
   Download,
   Smartphone,
+  Search,
+  Pickaxe,
+  X,
 } from 'lucide-react';
 
 interface ReadingsViewProps {
@@ -44,12 +48,34 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
   };
 
   const [targetDate, setTargetDate] = useState<string>(getFutureDate(30));
+  const [mineSearchQuery, setMineSearchQuery] = useState<string>('');
+  const [selectedMine, setSelectedMine] = useState<WorldMine | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [inquiry, setInquiry] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentReading, setCurrentReading] = useState<DivinationReading | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isDownloaded, setIsDownloaded] = useState<boolean>(false);
+
+  const activeMinesList = useMemo(() => {
+    return mines && mines.length > 0 ? mines : WORLD_MINES;
+  }, [mines]);
+
+  // Filtered mines based on search input
+  const searchResults = useMemo(() => {
+    if (!mineSearchQuery.trim()) return [];
+    const q = mineSearchQuery.toLowerCase().trim();
+    return activeMinesList
+      .filter(
+        (m) =>
+          m.name.toLowerCase().includes(q) ||
+          m.location.toLowerCase().includes(q) ||
+          m.country.toLowerCase().includes(q) ||
+          m.primaryMineral.toLowerCase().includes(q)
+      )
+      .slice(0, 8);
+  }, [mineSearchQuery, activeMinesList]);
 
   const quickOptions = [
     { label: '30 Days', days: 30 },
@@ -62,26 +88,40 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
     setIsLoading(true);
     setIsSaved(false);
 
-    const activeMines = mines && mines.length > 0 ? mines : WORLD_MINES;
+    let chosenMine: WorldMine;
 
-    // Date & Sacred Geometry Synchronization:
-    const targetDateObj = new Date(targetDate || new Date().toISOString().split('T')[0]);
-    const startOfYear = new Date(targetDateObj.getFullYear(), 0, 1);
-    const dayOfYear = Math.max(1, Math.floor((targetDateObj.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)));
-    const datePhase = (dayOfYear / 365.25) * 2 * Math.PI;
+    if (selectedMine) {
+      chosenMine = selectedMine;
+    } else if (mineSearchQuery.trim()) {
+      const q = mineSearchQuery.toLowerCase().trim();
+      const directMatch = activeMinesList.find(
+        (m) =>
+          m.name.toLowerCase() === q ||
+          m.name.toLowerCase().includes(q) ||
+          m.location.toLowerCase().includes(q) ||
+          m.country.toLowerCase().includes(q)
+      );
+      chosenMine = directMatch || activeMinesList[0];
+    } else {
+      // Date & Sacred Geometry Synchronization:
+      const targetDateObj = new Date(targetDate || new Date().toISOString().split('T')[0]);
+      const startOfYear = new Date(targetDateObj.getFullYear(), 0, 1);
+      const dayOfYear = Math.max(1, Math.floor((targetDateObj.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)));
+      const datePhase = (dayOfYear / 365.25) * 2 * Math.PI;
 
-    // Score and rank mines to unearth the harmonious subterranean alignment
-    const scored = activeMines.map((mine) => {
-      const latRad = ((mine.lat || 0) * Math.PI) / 180;
-      const lonRad = ((mine.lng || 0) * Math.PI) / 180;
-      const depthRatio = (mine.depthMeters || 600) / 4000;
-      const geomResonance = Math.abs(Math.sin(latRad + datePhase) * Math.cos(lonRad - datePhase) + depthRatio);
-      const entropy = Math.random() * 0.4;
-      return { mine, score: geomResonance + entropy };
-    });
+      // Score and rank mines to unearth the harmonious subterranean alignment
+      const scored = activeMinesList.map((mine) => {
+        const latRad = ((mine.lat || 0) * Math.PI) / 180;
+        const lonRad = ((mine.lng || 0) * Math.PI) / 180;
+        const depthRatio = (mine.depthMeters || 600) / 4000;
+        const geomResonance = Math.abs(Math.sin(latRad + datePhase) * Math.cos(lonRad - datePhase) + depthRatio);
+        const entropy = Math.random() * 0.4;
+        return { mine, score: geomResonance + entropy };
+      });
 
-    scored.sort((a, b) => b.score - a.score);
-    const chosenMine = scored[0]?.mine || activeMines[0];
+      scored.sort((a, b) => b.score - a.score);
+      chosenMine = scored[0]?.mine || activeMinesList[0];
+    }
     const dateGeom = calculateDateGeometry(targetDate);
 
     // Try AI generation if online; gracefully fallback to deep deterministic offline prophecy
@@ -242,6 +282,9 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
     setCurrentReading(null);
     setIsSaved(false);
     setInquiry('');
+    setSelectedMine(null);
+    setMineSearchQuery('');
+    setIsDropdownOpen(false);
     setIsCopied(false);
     setIsDownloaded(false);
   };
@@ -260,6 +303,9 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
           >
             {/* Clean Title */}
             <div className="text-center space-y-2 pt-2">
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.25em] text-amber-500 font-bold">
+                RAINSTARSTERRAIN FORCAST
+              </div>
               <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-wide text-amber-200">
                 Astrology Prophecy Reading
               </h1>
@@ -305,6 +351,98 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Mine Name Input / Selection Field */}
+              <div className="space-y-2 pt-1 relative">
+                <label className="block text-xs font-mono uppercase tracking-wider text-amber-400 font-semibold flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Pickaxe className="w-4 h-4 text-amber-400" />
+                    <span>Pick or Text the Name of the Mine</span>
+                  </span>
+                  <span className="text-[10px] text-stone-500 font-mono lowercase">(optional — or oracle aligns)</span>
+                </label>
+                <p className="text-[11px] text-stone-400 font-serif">
+                  Type any mine, vein, country, or mineral name, or leave blank to let tectonic geometry choose.
+                </p>
+
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-500">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    value={mineSearchQuery}
+                    onChange={(e) => {
+                      setMineSearchQuery(e.target.value);
+                      setSelectedMine(null);
+                      setIsDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsDropdownOpen(true)}
+                    placeholder="e.g. Kimberley Diamond Mine, Chuquicamata, Gold, or type any mine..."
+                    className="w-full bg-stone-950 border border-stone-700/80 hover:border-amber-500/50 focus:border-amber-500 rounded-2xl pl-10 pr-10 py-3.5 text-sm font-mono text-stone-100 placeholder-stone-600 outline-none transition-all shadow-inner"
+                  />
+                  {mineSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMineSearchQuery('');
+                        setSelectedMine(null);
+                        setIsDropdownOpen(false);
+                      }}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-500 hover:text-stone-200"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Selected Mine Badge */}
+                {selectedMine && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-mono text-amber-200">
+                    <div className="flex items-center gap-2 truncate">
+                      <Gem className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span className="font-bold truncate">{selectedMine.name}</span>
+                      <span className="text-stone-400">({selectedMine.primaryMineral} · {selectedMine.country})</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedMine(null);
+                        setMineSearchQuery('');
+                      }}
+                      className="text-stone-400 hover:text-amber-300 ml-2"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Autocomplete Dropdown */}
+                {isDropdownOpen && searchResults.length > 0 && !selectedMine && (
+                  <div className="absolute z-20 top-full left-0 right-0 mt-1.5 bg-stone-950 border border-stone-700 rounded-2xl shadow-2xl max-h-56 overflow-y-auto divide-y divide-stone-800">
+                    {searchResults.map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMine(m);
+                          setMineSearchQuery(m.name);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-stone-900 flex items-center justify-between text-xs font-mono transition-colors"
+                      >
+                        <div>
+                          <div className="font-bold text-stone-200">{m.name}</div>
+                          <div className="text-[11px] text-stone-400">
+                            {m.location}, {m.country} · <span className="text-amber-300">{m.primaryMineral}</span>
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-stone-500">-{m.depthMeters}m</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Inquiry Box (Optional) */}
@@ -409,6 +547,11 @@ export const ReadingsView: React.FC<ReadingsViewProps> = ({
                 </div>
               );
             })()}
+
+            {/* GOOGLE MAPS INTEGRATION PINPOINTING UNEARTHED MINE */}
+            {currentReading.drawnMines[0] && (
+              <MineLocationMap mine={currentReading.drawnMines[0].mine} />
+            )}
 
             {/* PROPHECY (4 Parts) */}
             <div className="bg-stone-900/80 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5 shadow-lg">

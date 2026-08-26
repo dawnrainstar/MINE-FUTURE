@@ -353,13 +353,27 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
                       </ul>
                     </div>
 
-                    <button
-                      onClick={() => handleSimulatedPurchase(1, `${settings.currencySymbol}${settings.singleReadingPrice}`, 'Single Prophecy')}
-                      className="mt-6 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-amber-300 font-serif text-xs font-bold border border-stone-700 hover:border-amber-400 transition-all flex items-center justify-center gap-2"
-                    >
-                      <CreditCard className="w-3.5 h-3.5" />
-                      <span>Unlock 1 Reading</span>
-                    </button>
+                    <div className="mt-6 space-y-2">
+                      {settings.paypalPaymentLink && (
+                        <a
+                          href={settings.paypalPaymentLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2.5 rounded-xl bg-[#0070BA] hover:bg-[#005ea6] text-white font-sans text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-md"
+                        >
+                          <CreditCard className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Pay with PayPal ({settings.currencySymbol}{settings.singleReadingPrice})</span>
+                          <ExternalLink className="w-3 h-3 text-stone-200" />
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleSimulatedPurchase(1, `${settings.currencySymbol}${settings.singleReadingPrice}`, 'Single Prophecy')}
+                        className="w-full py-2 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-amber-300 font-serif text-xs font-bold border border-stone-700 hover:border-amber-400 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Instant Unlock (1 Credit)</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* 5-Reading Bundle (Popular) */}
@@ -396,13 +410,27 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
                       </ul>
                     </div>
 
-                    <button
-                      onClick={() => handleSimulatedPurchase(5, `${settings.currencySymbol}${settings.bundleReadingPrice}`, '5-Reading Bundle')}
-                      className="mt-6 w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2"
-                    >
-                      <Zap className="w-4 h-4" />
-                      <span>Unlock 5 Readings Pack</span>
-                    </button>
+                    <div className="mt-6 space-y-2">
+                      {settings.paypalPaymentLink && (
+                        <a
+                          href={settings.paypalPaymentLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2.5 rounded-xl bg-[#0070BA] hover:bg-[#005ea6] text-white font-sans text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-md"
+                        >
+                          <CreditCard className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Pay with PayPal ({settings.currencySymbol}{settings.bundleReadingPrice})</span>
+                          <ExternalLink className="w-3 h-3 text-stone-200" />
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleSimulatedPurchase(5, `${settings.currencySymbol}${settings.bundleReadingPrice}`, '5-Reading Bundle')}
+                        className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+                      >
+                        <Zap className="w-4 h-4" />
+                        <span>Instant Unlock (5 Credits)</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Monthly Unlimited / Master */}
@@ -434,13 +462,27 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
                       </ul>
                     </div>
 
-                    <button
-                      onClick={() => handleSimulatedPurchase(30, `${settings.currencySymbol}${settings.monthlyPassPrice}/mo`, 'Monthly Unlimited Pass')}
-                      className="mt-6 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-amber-300 font-serif text-xs font-bold border border-stone-700 hover:border-amber-400 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Award className="w-3.5 h-3.5" />
-                      <span>Subscribe to Master Pass</span>
-                    </button>
+                    <div className="mt-6 space-y-2">
+                      {settings.paypalPaymentLink && (
+                        <a
+                          href={settings.paypalPaymentLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2.5 rounded-xl bg-[#0070BA] hover:bg-[#005ea6] text-white font-sans text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-md"
+                        >
+                          <CreditCard className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Subscribe via PayPal ({settings.currencySymbol}{settings.monthlyPassPrice})</span>
+                          <ExternalLink className="w-3 h-3 text-stone-200" />
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleSimulatedPurchase(30, `${settings.currencySymbol}${settings.monthlyPassPrice}/mo`, 'Monthly Unlimited Pass')}
+                        className="w-full py-2 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-amber-300 font-serif text-xs font-bold border border-stone-700 hover:border-amber-400 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Award className="w-3.5 h-3.5" />
+                        <span>Instant Unlock (30 Credits)</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -792,7 +834,17 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div>
+                  <label className="block text-xs font-mono text-stone-400 mb-1">PayPal Checkout / Button URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://www.paypal.com/ncp/payment/..."
+                    value={settings.paypalPaymentLink}
+                    onChange={(e) => setSettings({ ...settings, paypalPaymentLink: e.target.value })}
+                    className="w-full bg-stone-950 border border-stone-700 rounded-xl px-3 py-2.5 text-sm text-stone-100 focus:border-amber-500 outline-none font-mono"
+                  />
+                </div>
                 <div>
                   <label className="block text-xs font-mono text-stone-400 mb-1">Stripe Payment / Buy Link URL</label>
                   <input

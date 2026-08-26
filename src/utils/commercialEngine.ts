@@ -3,9 +3,14 @@ import { calculateDateGeometry } from '../data/pennickEngine';
 import { downloadFile } from './offlineEngine';
 
 const SETTINGS_KEY = 'astrology_profesey_commercial_settings_v1';
-const CREDITS_KEY = 'astrology_profesey_user_credits_v1';
+const CREDITS_KEY = 'astrology_profesey_user_credits_v2';
 const TRANSACTIONS_KEY = 'astrology_profesey_transactions_v1';
 const ORDERS_KEY = 'astrology_profesey_client_orders_v1';
+const READINGS_COUNT_KEY = 'astrology_profesey_readings_used_v1';
+const LIFETIME_SUBSCRIPTION_KEY = 'astrology_profesey_lifetime_v1';
+
+export const TOTAL_FREE_READINGS = 100;
+export const LIFETIME_SUBSCRIPTION_PRICE = 50.0;
 
 export const DEFAULT_COMMERCIAL_SETTINGS: CommercialSettings = {
   appTitle: 'ASTROLOGY PROFESEY READINGS',
@@ -14,26 +19,22 @@ export const DEFAULT_COMMERCIAL_SETTINGS: CommercialSettings = {
   practitionerTitle: 'Chthonic Astrologer & Earth Cartographer',
   contactEmail: 'readings@profesey.oracle',
   currencySymbol: '$',
-  singleReadingPrice: 4.99,
-  bundleReadingPrice: 14.99,
+  singleReadingPrice: 15.0,
+  bundleReadingPrice: 45.0,
   monthlyPassPrice: 29.0,
   stripePaymentLink: '',
-  paypalPaymentLink: '',
+  paypalPaymentLink: 'https://www.paypal.com/ncp/payment/WRP73U58VBEZG',
   etsyShopUrl: '',
   affiliateAmazonTag: '',
-  enablePaywall: true,
-  freeDailyReadingsLimit: 1,
+  enablePaywall: false,
+  freeDailyReadingsLimit: 100,
 };
 
 export function getCommercialSettings(): CommercialSettings {
   try {
     const stored = localStorage.getItem(SETTINGS_KEY);
-    if (stored) {
-      return { ...DEFAULT_COMMERCIAL_SETTINGS, ...JSON.parse(stored) };
-    }
-  } catch (e) {
-    console.error('Failed to load commercial settings:', e);
-  }
+    if (stored) return { ...DEFAULT_COMMERCIAL_SETTINGS, ...JSON.parse(stored) };
+  } catch {}
   return DEFAULT_COMMERCIAL_SETTINGS;
 }
 
@@ -49,24 +50,21 @@ export function saveCommercialSettings(settings: CommercialSettings): void {
 export function getUserCredits(): number {
   try {
     const stored = localStorage.getItem(CREDITS_KEY);
-    if (stored !== null) {
-      return parseInt(stored, 10);
-    }
+    if (stored !== null) return parseInt(stored, 10);
   } catch {}
-  // Default starting credits for trial
-  return 3;
+  return TOTAL_FREE_READINGS;
 }
 
-export function setUserCredits(amount: number): void {
+export function setUserCredits(credits: number): void {
   try {
-    localStorage.setItem(CREDITS_KEY, amount.toString());
+    localStorage.setItem(CREDITS_KEY, credits.toString());
     window.dispatchEvent(new Event('user_credits_updated'));
   } catch (e) {
     console.error('Failed to set user credits:', e);
   }
 }
 
-export function addCredits(amount: number, description: string): number {
+export function addCredits(amount: number, description: string = 'Credit Purchase'): number {
   const current = getUserCredits();
   const next = current + amount;
   setUserCredits(next);
@@ -514,4 +512,70 @@ export function downloadClientDeliveryPack(order: ClientOrder, reading: Divinati
   const html = generateClientDeliveryHtml(order, reading, settings);
   const cleanName = order.clientName.replace(/[^a-zA-Z0-9]/g, '_');
   downloadFile(html, `Prophecy_Reading_For_${cleanName}_Order_${order.orderNumber}.html`, 'text/html');
+}
+
+/**
+ * Returns how many free readings the user has completed so far.
+ */
+export function getReadingsUsedCount(): number {
+  try {
+    const stored = localStorage.getItem(READINGS_COUNT_KEY);
+    if (stored !== null) {
+      return parseInt(stored, 10) || 0;
+    }
+  } catch {}
+  return 0;
+}
+
+export function incrementReadingsUsed(): number {
+  const current = getReadingsUsedCount();
+  const next = current + 1;
+  try {
+    localStorage.setItem(READINGS_COUNT_KEY, next.toString());
+    window.dispatchEvent(new Event('readings_used_updated'));
+  } catch (e) {
+    console.error('Failed to update readings count:', e);
+  }
+  return next;
+}
+
+/**
+ * Returns whether user has activated the $50 Lifetime Subscription.
+ */
+export function isLifetimeSubscriber(): boolean {
+  try {
+    const stored = localStorage.getItem(LIFETIME_SUBSCRIPTION_KEY);
+    if (stored !== null) {
+      return JSON.parse(stored) === true;
+    }
+  } catch {}
+  return false;
+}
+
+export function activateLifetimeSubscription(): void {
+  try {
+    localStorage.setItem(LIFETIME_SUBSCRIPTION_KEY, JSON.stringify(true));
+    window.dispatchEvent(new Event('lifetime_subscription_updated'));
+    window.dispatchEvent(new Event('commercial_settings_updated'));
+  } catch (e) {
+    console.error('Failed to activate lifetime subscription:', e);
+  }
+}
+
+export function deactivateLifetimeSubscription(): void {
+  try {
+    localStorage.setItem(LIFETIME_SUBSCRIPTION_KEY, JSON.stringify(false));
+    window.dispatchEvent(new Event('lifetime_subscription_updated'));
+  } catch (e) {
+    console.error('Failed to deactivate lifetime subscription:', e);
+  }
+}
+
+/**
+ * Calculates remaining free readings (0 to 100).
+ */
+export function getRemainingFreeReadings(): number {
+  if (isLifetimeSubscriber()) return Infinity;
+  const used = getReadingsUsedCount();
+  return Math.max(0, TOTAL_FREE_READINGS - used);
 }

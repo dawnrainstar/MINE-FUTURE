@@ -6,6 +6,7 @@ import { ArchiveView } from './components/ArchiveView';
 import { AccountView } from './components/AccountView';
 import { GoogleDriveSyncModal } from './components/GoogleDriveSyncModal';
 import { OfflineDownloadModal } from './components/OfflineDownloadModal';
+import { AuthModal } from './components/AuthModal';
 import { getActiveMines } from './utils/mineDatabase';
 
 const STORAGE_KEY = 'subterranea_oracle_journal_v2';
@@ -15,6 +16,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<NavTab>('readings');
   const [isDriveOpen, setIsDriveOpen] = useState<boolean>(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
 
   // Active Mines catalog (2,500+ world mines)
   const [mines] = useState<WorldMine[]>(() => {
@@ -73,7 +75,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-500/30 selection:text-amber-200 flex flex-col justify-between">
-      {/* Tiny Navigation Bar (Readings | Archive | Account | Download App) */}
+      {/* Tiny Navigation Bar (Readings | Archive | Account / Sign Up | Download App) */}
       <header className="sticky top-0 z-40 bg-stone-950/90 backdrop-blur-md pt-2 pb-1 border-b border-stone-900/60">
         <Navigation
           activeTab={activeTab}
@@ -81,6 +83,7 @@ export default function App() {
           savedCount={savedReadings.length}
           isPremium={isPremium}
           onOpenDownloadApp={() => setIsDownloadOpen(true)}
+          onOpenAuthModal={() => setIsAuthOpen(true)}
         />
       </header>
 
@@ -113,9 +116,19 @@ export default function App() {
             savedReadings={savedReadings}
             onOpenDriveModal={() => setIsDriveOpen(true)}
             onOpenDownloadModal={() => setIsDownloadOpen(true)}
+            onOpenAuthModal={() => setIsAuthOpen(true)}
           />
         )}
       </main>
+
+      {/* Auth & Sign Up Modal */}
+      {isAuthOpen && (
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          initialMode="signup"
+        />
+      )}
 
       {/* Google Drive Sync Modal (tucked in Account) */}
       {isDriveOpen && (
@@ -142,3 +155,4 @@ export default function App() {
     </div>
   );
 }
+

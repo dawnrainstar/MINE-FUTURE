@@ -14,16 +14,25 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
     '';
 
   const [apiKey, setApiKey] = useState<string>(() => {
-    return localStorage.getItem('subterranea_gmaps_key') || defaultApiKey;
+    const saved = localStorage.getItem('subterranea_gmaps_key');
+    if (saved && saved.trim().startsWith('AIza') && saved.trim().length >= 25) {
+      return saved.trim();
+    }
+    if (defaultApiKey && defaultApiKey.trim().startsWith('AIza') && defaultApiKey.trim().length >= 25) {
+      return defaultApiKey.trim();
+    }
+    return '';
   });
   const [keyInput, setKeyInput] = useState<string>(apiKey);
   const [showKeyConfig, setShowKeyConfig] = useState<boolean>(false);
   const [mapAuthError, setMapAuthError] = useState<boolean>(false);
   const [mapType, setMapType] = useState<string>('hybrid');
 
+  const hasValidGmapsKey = Boolean(apiKey && apiKey.startsWith('AIza') && apiKey.length >= 25 && !mapAuthError);
+
   useEffect(() => {
     (window as any).gm_authFailure = () => {
-      console.warn('Google Maps authentication notice detected');
+      console.warn('Google Maps authentication notice detected - switching to local cartographic layer');
       setMapAuthError(true);
     };
     return () => {
@@ -33,10 +42,19 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
 
   const handleSaveApiKey = (key: string) => {
     const trimmed = key.trim();
-    setApiKey(trimmed);
-    setMapAuthError(false);
-    localStorage.setItem('subterranea_gmaps_key', trimmed);
-    setShowKeyConfig(false);
+    if (trimmed.startsWith('AIza') && trimmed.length >= 25) {
+      setApiKey(trimmed);
+      setMapAuthError(false);
+      localStorage.setItem('subterranea_gmaps_key', trimmed);
+      setShowKeyConfig(false);
+    } else if (!trimmed) {
+      setApiKey('');
+      setMapAuthError(false);
+      localStorage.removeItem('subterranea_gmaps_key');
+      setShowKeyConfig(false);
+    } else {
+      alert('Please enter a valid Google Maps API Key starting with AIza...');
+    }
   };
 
   const gmapsExternalUrl = `https://www.google.com/maps/search/?api=1&query=${mine.lat},${mine.lng}`;
@@ -90,7 +108,7 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
 
       {/* Map Canvas */}
       <div className="w-full h-64 sm:h-72 relative bg-stone-950">
-        {apiKey && !mapAuthError ? (
+        {hasValidGmapsKey ? (
           <APIProvider apiKey={apiKey} onError={() => setMapAuthError(true)}>
             <Map
               mapId="DEMO_MAP_ID"

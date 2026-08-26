@@ -242,3 +242,21 @@ export interface CreditTransaction {
   amount: number;
   description: string;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  practitionerName?: string;
+  zodiacSign?: string;
+  birthDate?: string;
+  elementalAffiliation?: ElementalAffinity;
+  avatarSeed?: string;
+  createdAt: number;
+  plan: 'free' | 'lifetime' | 'pro';
+  credits: number;
+  readingsCount: number;
+  paypalLinkedEmail?: string;
+  bio?: string;
+}
+

@@ -10,6 +10,7 @@ export function formatProphecyText(reading: DivinationReading): string {
   const lines: string[] = [];
 
   lines.push(`══════════════════════════════════════════════════`);
+  lines.push(`             RAINSTARSTERRAIN FORCAST             `);
   lines.push(`           ASTROLOGY PROPHECY READING            `);
   lines.push(`══════════════════════════════════════════════════`);
   lines.push(``);
