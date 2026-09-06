@@ -5,9 +5,10 @@ import { MapPin, Globe, ExternalLink, Layers, Key, Compass, Navigation } from 'l
 
 interface MineLocationMapProps {
   mine: WorldMine;
+  embedded?: boolean;
 }
 
-export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
+export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine, embedded = false }) => {
   const defaultApiKey =
     (import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY ||
     (import.meta as any).env?.GOOGLE_MAPS_API_KEY ||
@@ -57,10 +58,18 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
     }
   };
 
-  const gmapsExternalUrl = `https://www.google.com/maps/search/?api=1&query=${mine.lat},${mine.lng}`;
+  const lat = typeof mine?.lat === 'number' ? mine.lat : parseFloat(String(mine?.lat || 0)) || 0;
+  const lng = typeof mine?.lng === 'number' ? mine.lng : parseFloat(String(mine?.lng || 0)) || 0;
+  const gmapsExternalUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
   return (
-    <div className="bg-stone-900/80 border border-stone-800 rounded-3xl overflow-hidden shadow-xl flex flex-col">
+    <div
+      className={
+        embedded
+          ? 'bg-stone-950/80 border border-stone-800 rounded-2xl overflow-hidden shadow-inner flex flex-col'
+          : 'bg-stone-900/80 border border-stone-800 rounded-3xl overflow-hidden shadow-xl flex flex-col'
+      }
+    >
       {/* Header bar */}
       <div className="px-5 py-3 bg-stone-950/90 border-b border-stone-800 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -113,8 +122,8 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
             <Map
               mapId="DEMO_MAP_ID"
               style={{ width: '100%', height: '100%' }}
-              defaultCenter={{ lat: mine.lat, lng: mine.lng }}
-              center={{ lat: mine.lat, lng: mine.lng }}
+              defaultCenter={{ lat, lng }}
+              center={{ lat, lng }}
               defaultZoom={11}
               gestureHandling="cooperative"
               disableDefaultUI={false}
@@ -122,21 +131,21 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
               internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
             >
               <AdvancedMarker
-                position={{ lat: mine.lat, lng: mine.lng }}
-                title={`${mine.name} (${mine.primaryMineral})`}
+                position={{ lat, lng }}
+                title={`${mine?.name || 'Subterranean Seam'} (${mine?.primaryMineral || 'Mineral'})`}
               >
                 <div className="group cursor-pointer transform hover:scale-125 transition-transform flex flex-col items-center">
                   <div
                     style={{
-                      backgroundColor: mine.mineralColor || '#f59e0b',
-                      boxShadow: `0 0 16px ${mine.mineralColor || '#f59e0b'}`,
+                      backgroundColor: mine?.mineralColor || '#f59e0b',
+                      boxShadow: `0 0 16px ${mine?.mineralColor || '#f59e0b'}`,
                     }}
                     className="w-6 h-6 rounded-full border-2 border-stone-950 flex items-center justify-center animate-pulse"
                   >
                     <div className="w-2 h-2 rounded-full bg-stone-950"></div>
                   </div>
                   <div className="mt-1 px-2 py-0.5 rounded bg-stone-950/90 border border-amber-500/40 text-[10px] font-mono text-amber-200 shadow-md whitespace-nowrap">
-                    {mine.name} (-{mine.depthMeters}m)
+                    {mine?.name || 'Seam'} (-{mine?.depthMeters || 500}m)
                   </div>
                 </div>
               </AdvancedMarker>
@@ -151,11 +160,11 @@ export const MineLocationMap: React.FC<MineLocationMapProps> = ({ mine }) => {
                 <Navigation className="w-3.5 h-3.5 text-amber-400" />
                 <span>Geographic Pinpoint:</span>
                 <span className="text-amber-300 font-bold">
-                  {mine.lat.toFixed(4)}°, {mine.lng.toFixed(4)}°
+                  {lat.toFixed(4)}°, {lng.toFixed(4)}°
                 </span>
               </div>
               <div className="text-stone-400">
-                Depth: <span className="text-stone-200">-{mine.depthMeters}m</span> ({mine.depthCategory})
+                Depth: <span className="text-stone-200">-{mine?.depthMeters || 500}m</span> ({mine?.depthCategory || 'Subterranean'})
               </div>
             </div>
 

@@ -54,6 +54,10 @@ class SoundEngine {
   public playFrequency(_hz: number) {
     // Sound disabled
   }
+
+  public playClick() {
+    // Sound disabled
+  }
 }
 
 export const sound = new SoundEngine();

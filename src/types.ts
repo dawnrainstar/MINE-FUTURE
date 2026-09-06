@@ -123,6 +123,7 @@ export interface WorldMine {
   mineralColor: string; // Hex color for visual glow
   discoveryYear?: string;
   titaness?: TitanessProfile;
+  attributes?: Record<string, string | number>;
 }
 
 export type SpreadType = 'single' | 'strata3' | 'elemental5' | 'descent4' | 'titanessFuture5' | 'scatter';
@@ -164,13 +165,36 @@ export interface OracleInterpretation {
       name: string;
       action: string;
       resonance: string;
+      specimenType?: string;
+      crystalSystem?: string;
+      placement?: string;
+      mohsHardness?: string;
+      color?: string;
     }[];
     groundingRitual: string;
     mantleRemedy: string;
-    temporalMilestones: {
+    temporalMilestones?: {
       timeframe: string;
       guidance: string;
     }[];
+    geomanticCode?: string;
+    geomanticFigureName?: string;
+    geomanticFigureTetragram?: [1 | 2, 1 | 2, 1 | 2, 1 | 2];
+    catalyticMineral?: {
+      name: string;
+      action: string;
+      resonance: string;
+      elementalSpark?: string;
+    };
+    altarGeometry?: {
+      pattern: string;
+      compassHeading: string;
+      azimuthDegrees: number;
+      placementInstructions: string;
+    };
+    lithosphericChargingWindow?: string;
+    sealingFormula?: string;
+    somaticFocusCenter?: string;
   };
   environmentalWarning?: string;
   whyMiningMustStop?: string;

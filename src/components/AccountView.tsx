@@ -220,32 +220,32 @@ export const AccountView: React.FC<AccountViewProps> = ({
     <div className="w-full max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Title */}
       <div className="border-b border-stone-800 pb-4">
-        <h1 className="text-2xl font-serif font-bold text-amber-200">Account & Membership</h1>
-        <p className="text-xs text-stone-400 font-serif">Sign Up • Astrological Profile • Lifetime Access & Sync</p>
+        <h1 className="text-3xl font-serif font-bold text-amber-200">Account & Membership</h1>
+        <p className="text-sm text-stone-300 font-serif pt-1">Sign Up • Astrological Profile • Lifetime Access & Sync</p>
       </div>
 
       {feedback && (
-        <div className="p-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs font-serif text-center font-medium shadow-md">
+        <div className="p-4 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-200 text-sm font-serif text-center font-semibold shadow-lg">
           {feedback}
         </div>
       )}
 
       {/* 1. AUTH / SIGN UP / USER IDENTITY CARD */}
       {!currentUser ? (
-        <div className="bg-stone-900/90 border border-amber-500/40 rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl relative overflow-hidden">
+        <div className="bg-stone-900/95 border border-amber-500/40 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Heading */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
-                <Compass className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 shrink-0">
+                <Compass className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-lg font-serif font-bold text-amber-100">
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-amber-100">
                   {authTab === 'signup' ? 'Create Your Oracle Account' : 'Sign In to Oracle'}
                 </h2>
-                <p className="text-xs text-stone-400 font-serif">
+                <p className="text-xs sm:text-sm text-stone-300 font-serif">
                   {authTab === 'signup'
                     ? 'Get 100 free readings, save your natal coordinates, and sync readings'
                     : 'Access your astrological profile and past prophecy archive'}
@@ -254,17 +254,17 @@ export const AccountView: React.FC<AccountViewProps> = ({
             </div>
 
             {/* Toggle Tabs */}
-            <div className="flex bg-stone-950 p-1 rounded-xl border border-stone-800 shrink-0">
+            <div className="flex bg-stone-950 p-1.5 rounded-xl border border-stone-800 shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setAuthTab('signup');
                   setAuthError(null);
                 }}
-                className={`px-3 py-1.5 text-xs font-serif font-semibold rounded-lg transition-all ${
+                className={`px-4 py-2 text-xs sm:text-sm font-serif font-bold rounded-lg transition-all ${
                   authTab === 'signup'
                     ? 'bg-amber-500 text-stone-950 shadow-sm'
-                    : 'text-stone-400 hover:text-stone-200'
+                    : 'text-stone-300 hover:text-white'
                 }`}
               >
                 Sign Up
@@ -275,10 +275,10 @@ export const AccountView: React.FC<AccountViewProps> = ({
                   setAuthTab('signin');
                   setAuthError(null);
                 }}
-                className={`px-3 py-1.5 text-xs font-serif font-semibold rounded-lg transition-all ${
+                className={`px-4 py-2 text-xs sm:text-sm font-serif font-bold rounded-lg transition-all ${
                   authTab === 'signin'
                     ? 'bg-amber-500 text-stone-950 shadow-sm'
-                    : 'text-stone-400 hover:text-stone-200'
+                    : 'text-stone-300 hover:text-white'
                 }`}
               >
                 Sign In
@@ -287,13 +287,13 @@ export const AccountView: React.FC<AccountViewProps> = ({
           </div>
 
           {authError && (
-            <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/50 text-red-200 text-xs font-serif">
+            <div className="p-4 rounded-xl bg-red-950/70 border border-red-500/60 text-red-200 text-sm font-serif">
               {authError}
             </div>
           )}
 
           {authSuccess && (
-            <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-200 text-xs font-serif">
+            <div className="p-4 rounded-xl bg-emerald-950/70 border border-emerald-500/60 text-emerald-200 text-sm font-serif">
               {authSuccess}
             </div>
           )}
@@ -301,48 +301,48 @@ export const AccountView: React.FC<AccountViewProps> = ({
           {/* SIGN UP FORM */}
           {authTab === 'signup' && (
             <form onSubmit={handleSignUp} className="space-y-4 pt-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                     Full Name / Title <span className="text-amber-400">*</span>
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                    <User className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
                     <input
                       type="text"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Dawn Rainstar"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-100 placeholder-stone-600"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-serif font-medium text-stone-300">
+                <div className="space-y-1.5">
+                  <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                     Email Address <span className="text-amber-400">*</span>
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                    <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="dawn@example.com"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-100 placeholder-stone-600"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="space-y-1.5">
+                <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                   Password / Passkey <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                  <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
@@ -350,27 +350,27 @@ export const AccountView: React.FC<AccountViewProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a passkey (minimum 6 characters)"
-                    className="w-full pl-9 pr-10 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-100 placeholder-stone-600"
+                    className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-stone-500 hover:text-stone-300"
+                    className="absolute right-3.5 top-3 text-stone-400 hover:text-stone-200"
                   >
-                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                     Zodiac Sun Sign
                   </label>
                   <select
                     value={zodiacSign}
                     onChange={(e) => setZodiacSign(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-200"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-200 font-sans"
                   >
                     {ZODIAC_SIGNS.map((sign) => (
                       <option key={sign} value={sign}>
@@ -380,14 +380,14 @@ export const AccountView: React.FC<AccountViewProps> = ({
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-serif font-medium text-stone-300">
+                <div className="space-y-1.5">
+                  <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                     Elemental Affiliation
                   </label>
                   <select
                     value={element}
                     onChange={(e) => setElement(e.target.value as ElementalAffinity)}
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-200"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-200 font-sans"
                   >
                     {ELEMENTAL_AFFINITIES.map((el) => (
                       <option key={el} value={el}>
@@ -400,11 +400,11 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 hover:from-amber-400 hover:to-amber-200 text-stone-950 font-serif font-bold text-xs shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 sm:py-4 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 hover:from-amber-400 hover:to-amber-200 text-stone-950 font-serif font-bold text-sm sm:text-base shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-stone-950" />
+                <Sparkles className="w-5 h-5 text-stone-950" />
                 <span>Sign Up & Claim 100 Free Readings</span>
-                <ArrowRight className="w-3.5 h-3.5 text-stone-950" />
+                <ArrowRight className="w-4 h-4 text-stone-950" />
               </button>
             </form>
           )}
@@ -412,52 +412,52 @@ export const AccountView: React.FC<AccountViewProps> = ({
           {/* SIGN IN FORM */}
           {authTab === 'signin' && (
             <form onSubmit={handleSignIn} className="space-y-4 pt-1">
-              <div className="space-y-1">
-                <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="space-y-1.5">
+                <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                  <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-100 placeholder-stone-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="space-y-1.5">
+                <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                   Password / Passkey
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                  <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter passkey"
-                    className="w-full pl-9 pr-10 py-2 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-100 placeholder-stone-600"
+                    className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-stone-500 hover:text-stone-300"
+                    className="absolute right-3.5 top-3 text-stone-400 hover:text-stone-200"
                   >
-                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 sm:py-4 px-5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-bold text-sm sm:text-base shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Lock className="w-4 h-4 text-stone-950" />
+                <Lock className="w-5 h-5 text-stone-950" />
                 <span>Sign In to Account</span>
               </button>
             </form>
@@ -465,26 +465,26 @@ export const AccountView: React.FC<AccountViewProps> = ({
         </div>
       ) : (
         /* REGISTERED USER PROFILE CARD */
-        <div className="bg-stone-900/90 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
+        <div className="bg-stone-900/95 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-900 border border-amber-300/40 flex items-center justify-center text-stone-950 font-serif text-2xl font-bold shadow-lg shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-900 border border-amber-300/40 flex items-center justify-center text-stone-950 font-serif text-3xl font-bold shadow-lg shrink-0">
                 {currentUser.avatarSeed || currentUser.fullName.charAt(0)}
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-serif font-bold text-white">
+                  <span className="text-xl sm:text-2xl font-serif font-bold text-white">
                     {currentUser.fullName}
                   </span>
                   {currentUser.plan === 'lifetime' && (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-[10px] font-mono font-bold text-amber-300 flex items-center gap-1">
-                      <Crown className="w-3 h-3 text-amber-400" />
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-xs font-mono font-bold text-amber-300 flex items-center gap-1">
+                      <Crown className="w-3.5 h-3.5 text-amber-400" />
                       LIFETIME
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-stone-400 font-mono">{currentUser.email}</div>
-                <div className="text-[11px] font-serif text-amber-300/90 flex items-center gap-2 pt-0.5">
+                <div className="text-xs sm:text-sm text-stone-300 font-mono">{currentUser.email}</div>
+                <div className="text-xs sm:text-sm font-serif text-amber-300/90 flex items-center gap-2 pt-0.5">
                   <span>{currentUser.zodiacSign}</span>
                   <span>•</span>
                   <span>{currentUser.elementalAffiliation} Affinity</span>
@@ -493,22 +493,22 @@ export const AccountView: React.FC<AccountViewProps> = ({
             </div>
 
             {/* Profile Action Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 onClick={() => setIsEditing(!isEditing)}
-                className="py-2 px-3 rounded-xl bg-stone-950 hover:bg-stone-800 border border-stone-800 text-stone-300 text-xs font-serif flex items-center gap-1.5 transition-colors"
+                className="py-2.5 px-4 rounded-xl bg-stone-950 hover:bg-stone-800 border border-stone-700 text-stone-200 text-xs sm:text-sm font-serif font-semibold flex items-center gap-1.5 transition-colors"
               >
-                <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+                <Edit3 className="w-4 h-4 text-amber-400" />
                 <span>{isEditing ? 'Cancel Edit' : 'Edit Profile'}</span>
               </button>
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="py-2 px-3 rounded-xl bg-stone-950 hover:bg-red-950/40 border border-stone-800 hover:border-red-500/40 text-stone-400 hover:text-red-300 text-xs font-serif flex items-center gap-1.5 transition-colors"
+                className="py-2.5 px-4 rounded-xl bg-stone-950 hover:bg-red-950/50 border border-stone-700 hover:border-red-500/50 text-stone-300 hover:text-red-300 text-xs sm:text-sm font-serif font-semibold flex items-center gap-1.5 transition-colors"
                 title="Sign out of account"
               >
-                <LogOut className="w-3.5 h-3.5 text-red-400" />
+                <LogOut className="w-4 h-4 text-red-400" />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -516,26 +516,26 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
           {/* Edit Profile inline form */}
           {isEditing && (
-            <form onSubmit={handleSaveProfile} className="p-4 rounded-2xl bg-stone-950 border border-stone-800 space-y-3 mt-4">
-              <div className="text-xs font-mono uppercase text-amber-400 font-semibold">
+            <form onSubmit={handleSaveProfile} className="p-5 rounded-2xl bg-stone-950 border border-stone-800 space-y-4 mt-4">
+              <div className="text-xs sm:text-sm font-mono uppercase text-amber-400 font-bold">
                 Update Astrological Persona
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-serif text-stone-300">Name</label>
+              <div className="space-y-1.5">
+                <label className="text-xs sm:text-sm font-serif font-semibold text-stone-200">Name</label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-stone-900 border border-stone-800 text-xs text-stone-100 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-stone-900 border border-stone-700 text-sm text-stone-100 focus:outline-none focus:border-amber-400"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <label className="text-xs font-serif text-stone-300">Zodiac Sign</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs sm:text-sm font-serif font-semibold text-stone-200">Zodiac Sign</label>
                   <select
                     value={editZodiac}
                     onChange={(e) => setEditZodiac(e.target.value)}
-                    className="w-full px-2 py-2 rounded-xl bg-stone-900 border border-stone-800 text-xs text-stone-200"
+                    className="w-full px-3 py-2.5 rounded-xl bg-stone-900 border border-stone-700 text-sm text-stone-200"
                   >
                     {ZODIAC_SIGNS.map((s) => (
                       <option key={s} value={s}>
@@ -544,12 +544,12 @@ export const AccountView: React.FC<AccountViewProps> = ({
                     ))}
                   </select>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-serif text-stone-300">Element</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs sm:text-sm font-serif font-semibold text-stone-200">Element</label>
                   <select
                     value={editElement}
                     onChange={(e) => setEditElement(e.target.value as ElementalAffinity)}
-                    className="w-full px-2 py-2 rounded-xl bg-stone-900 border border-stone-800 text-xs text-stone-200"
+                    className="w-full px-3 py-2.5 rounded-xl bg-stone-900 border border-stone-700 text-sm text-stone-200"
                   >
                     {ELEMENTAL_AFFINITIES.map((el) => (
                       <option key={el} value={el}>
@@ -561,7 +561,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
               </div>
               <button
                 type="submit"
-                className="w-full py-2 rounded-xl bg-amber-500 text-stone-950 font-serif text-xs font-bold"
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif text-sm font-bold shadow-md"
               >
                 Save Profile Updates
               </button>

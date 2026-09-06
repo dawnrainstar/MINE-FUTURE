@@ -52,6 +52,36 @@ function generateChthonicFallbackReading(params: {
 
   const targetDateLabel = targetFutureDate || "the appointed season";
   const horizonLabel = timeHorizon || "Medium Horizon";
+  const userQuestion = question && question.trim() ? question.trim() : "What destiny and tectonic shifts will manifest by this date?";
+
+  // Categorize question topic for tailored answers
+  const qLower = userQuestion.toLowerCase();
+  let topicAdvice = "your personal sovereignty and purpose";
+  let manifestDetail = `A concrete manifestation in direct alignment with "${userQuestion}" will solidify`;
+  let obstacleDetail = "Lingering hesitation, self-doubt, and obsolete patterns";
+  let choiceDetail = "A decisive crossroads where you must choose between old comfort and authentic expansion";
+
+  if (qLower.includes("love") || qLower.includes("relationship") || qLower.includes("partner") || qLower.includes("heart") || qLower.includes("marriage")) {
+    topicAdvice = "relational harmony, truth, and heart-centered boundaries";
+    manifestDetail = `Regarding your inquiry on relationship and emotional union, a profound clarity and mutual alignment will solidify by ${targetDateLabel}`;
+    obstacleDetail = "Unspoken emotional debts, past projections, and guarded boundaries";
+    choiceDetail = "Choosing between surface peace and deep vulnerable truth in how you connect";
+  } else if (qLower.includes("career") || qLower.includes("job") || qLower.includes("work") || qLower.includes("money") || qLower.includes("business") || qLower.includes("finance")) {
+    topicAdvice = "vocational expansion, abundance, and tangible prosperity";
+    manifestDetail = `Regarding your professional and financial path, a lucrative opening and tangible acknowledgment of your mastery will crystallize by ${targetDateLabel}`;
+    obstacleDetail = "Scarcity mindsets, undervalued labor, and institutional friction";
+    choiceDetail = "Investing boldly in your own high-value sovereignty versus settling for unrewarding routines";
+  } else if (qLower.includes("move") || qLower.includes("home") || qLower.includes("place") || qLower.includes("travel") || qLower.includes("city") || qLower.includes("house")) {
+    topicAdvice = "geographic alignment, home sanctuary, and rooted belonging";
+    manifestDetail = `Regarding your inquiry on location and environment, the ideal physical anchor and spatial transition will open clearly by ${targetDateLabel}`;
+    obstacleDetail = "Attachment to stagnant environments and fear of rootlessness";
+    choiceDetail = "Committing to the ground that truly nourishes your vitality";
+  } else if (qLower.includes("health") || qLower.includes("healing") || qLower.includes("body") || qLower.includes("energy")) {
+    topicAdvice = "cellular rejuvenation, nervous system regulation, and vital force";
+    manifestDetail = `Regarding physical vitality and healing, your body will reach a restored physiological equilibrium by ${targetDateLabel}`;
+    obstacleDetail = "Suppressed burnout, irregular cycles, and overexertion";
+    choiceDetail = "Honoring your body's biological rhythms over external urgency";
+  }
 
   const strataInterpretations = drawnMines.map((item: any, idx: number) => {
     const m = item.mine;
@@ -62,30 +92,30 @@ function generateChthonicFallbackReading(params: {
       mineName: m.name || `Ancient Seam ${idx + 1}`,
       mineralSignificance: `${m.primaryMineral || "Native Ore"} (${m.mineralCategory || "Precious Ore"}) governed by ${m.feminineArchetype || "The Earth Mother"} at depth -${m.depthMeters || 1000}m anchors the subterranean current of ${m.chthonicKeyword || "transformation"}.`,
       revelation: isUpright
-        ? (m.uprightMeaning || "Open vein of abundance and clear mineral transmission.")
-        : (m.invertedMeaning || "Deep tectonic pressure requiring patience and inner grounding before extraction."),
+        ? (m.uprightMeaning || `Direct breakthrough for your inquiry regarding ${topicAdvice}.`)
+        : (m.invertedMeaning || `Deep tectonic incubation required before full external manifestation in ${topicAdvice}.`),
     };
   });
 
   return {
     oracularTitle: `The Prophecy of the ${leadMine.primaryMineral || "Golden"} Seam`,
-    mantleStrophe: `By ${targetDateLabel}, ancient stone will yield its core,\nThe subterranean mantle speaks what lies in store;\nThrough ${leadMine.name || "deep earth"} the sacred geometry flows,\nTo manifest above what the date's alignment shows.`,
+    mantleStrophe: `By ${targetDateLabel}, ancient stone will yield its core,\nThe subterranean mantle speaks what lies in store;\nTo answer "${userQuestion.slice(0, 50)}${userQuestion.length > 50 ? '...' : ''}",\nThe sacred geometry unveils the open door.`,
     targetFutureDate: targetDateLabel,
     timeHorizon: horizonLabel,
     strataInterpretations,
-    tectonicSynthesis: `Everything in this prophecy is mathematically and geologically determined by the sacred geometry of ${targetDateLabel}. The orbital station of this date aligns with the subterranean coordinates of ${leadMine.name || "the prime seam"} (${leadMine.location || "Earth Mantle"}). As the calendar advances toward ${targetDateLabel}, the hydrothermal pressure of ${leadMine.primaryMineral || "precious ore"} forms a golden-ratio vector that unlocks your situation. In this clear unfolding narrative, the physical and emotional resistance you have endured is reaching its natural geological crystallization point. You are stepping out of the chaotic silt and anchoring directly into the bedrock reality of your purpose.`,
+    tectonicSynthesis: `Directly addressing your inquiry—"${userQuestion}":\n\nEverything in this prophecy is mathematically and geologically determined by the sacred geometry of ${targetDateLabel}. The orbital station of this date aligns with the subterranean coordinates of ${leadMine.name || "the prime seam"} (${leadMine.location || "Earth Mantle"}). As the calendar advances toward ${targetDateLabel}, the hydrothermal pressure of ${leadMine.primaryMineral || "precious ore"} forms a golden-ratio vector that unlocks your situation. In this clear unfolding narrative, the physical and emotional resistance you have endured is reaching its natural geological crystallization point. You are stepping out of the chaotic silt and anchoring directly into the bedrock reality of ${topicAdvice}.`,
     futurePrediction: {
-      manifestEvent: `On or by ${targetDateLabel}, a concrete and tangible breakthrough aligned with ${leadMine.primaryMineral || "crystalline"} precision will physically crystallize, opening an unmistakable new path forward.`,
-      dissolvingObstacle: `The lingering doubts, outdated ties, and structural blockages that previously held you back will completely dissolve under the geothermal pressure of ${outcomeMine.name || "the deep mantle"}.`,
-      pivotalChoicePoint: `A critical threshold will appear where you must decisively choose between staying in safe shallow strata or boring boldly into your authentic sovereign power.`,
-      longTermOutcome: `Permanent elevation into sovereign clarity, grounded in the enduring frequency of ${outcomeMine.primaryMineral || "noble mineral bedrock"}.`,
+      manifestEvent: `${manifestDetail}, accompanied by the undeniable mineral resonance of ${leadMine.primaryMineral || "pure crystal"}.`,
+      dissolvingObstacle: `${obstacleDetail} will completely dissolve under the geothermal pressure of ${outcomeMine.name || "the deep mantle"}.`,
+      pivotalChoicePoint: `${choiceDetail}, appearing as a pivotal threshold prior to ${targetDateLabel}.`,
+      longTermOutcome: `Permanent elevation and grounded stability in ${topicAdvice}, rooted in the enduring frequency of ${outcomeMine.primaryMineral || "noble mineral bedrock"}.`,
     },
     chthonicPrescription: {
       prescribedMinerals: [
         {
           name: `Raw ${leadMine.primaryMineral || "Malachite or Pyrite"}`,
           action: `Keep close to your sleep altar or workspace as ${targetDateLabel} approaches.`,
-          resonance: `Calibrates your energetic field to ${leadMine.chthonicKeyword || "inner truth"} and anchors the date's geometric resonance.`,
+          resonance: `Calibrates your energetic field to ${leadMine.chthonicKeyword || "inner truth"} and anchors your inquiry's geometric resolution.`,
         },
         {
           name: `Grounding Hematite or Black Tourmaline`,
@@ -93,7 +123,7 @@ function generateChthonicFallbackReading(params: {
           resonance: `Creates an electromagnetic shield against volatile external turbulence.`,
         },
       ],
-      groundingRitual: `At the turning of the upcoming moon, place a flat river stone in water with rock salt, write your core intention on parchment, and place it beneath the earth to anchor this timeline.`,
+      groundingRitual: `At the turning of the upcoming moon, place a flat river stone in water with rock salt, speak your intention regarding "${userQuestion.slice(0, 45)}" aloud three times, and place it upon the earth to anchor this timeline.`,
       mantleRemedy: `Practice daily mantle breathwork: Inhale 4 counts drawing deep earth stillness, hold 8 counts settling the core, and exhale 2 counts releasing mental tension.`,
       temporalMilestones: [
         {
@@ -102,11 +132,11 @@ function generateChthonicFallbackReading(params: {
         },
         {
           timeframe: `Phase 2: Thermal Midpoint (Midway to ${targetDateLabel})`,
-          guidance: `Expect seismic friction or testing; hold your ground and trust the mineral core.`,
+          guidance: `Expect seismic friction or testing regarding your question; hold your ground and trust the mineral core.`,
         },
         {
           timeframe: `Phase 3: Bedrock Harvest (${targetDateLabel})`,
-          guidance: `Celebrate the crystallization of your effort and securely integrate your gains.`,
+          guidance: `Celebrate the crystallization of your answer and securely integrate your gains.`,
         },
       ],
     },
@@ -147,8 +177,9 @@ app.post("/api/oracle/read", async (req, res) => {
     const prompt = `You are the Chthonic Oracle of Subterranea — the prophetic voice of the Earth's mantle, antique anthropomorphic cartography, and sacred geometry.
 
 CRITICAL DIRECTIVES:
-1. EVERYTHING IS DETERMINED BY THE GEOMETRY OF THE DATE: The target future date ("${targetFutureDate || "The Unfolding Future"}") establishes the astronomical solar angle, planetary station, and geometric vector (spiral, triangle, hexagon, crossroads, or solar enclosure). Explicitly explain in your prophecy how the geometry of this exact date mathematically and energetically aligns with the drawn mine coordinates, mineral crystallizations, and the seeker's destiny.
-2. THE PROPHECY MUST BE CLEAR, VIVID, AND NARRATIVE: Speak with absolute narrative clarity, storytelling warmth, and poetic authority. Avoid vague or repetitive generalities. Tell the seeker an evocative, structured story of what is currently unfolding, how the geological pressure is building, and the exact sequence of events leading up to ${targetFutureDate || "the target date"}.
+1. ANSWER THE SEEKER'S QUESTION DIRECTLY, EXPLICITLY, AND ACCURATELY: The seeker asked: "${question || "What future events, tectonic shifts, and mineral transformations will manifest by this date?"}". Your prophecy, narrative synthesis, manifest event, dissolving obstacle, choice point, and outcome MUST directly answer this question with concrete specifics, deep insight, and compassionate authority.
+2. EVERYTHING IS DETERMINED BY THE GEOMETRY OF THE DATE & SUBTERRANEAN MANTLE: The target future date ("${targetFutureDate || "The Unfolding Future"}") establishes the astronomical solar angle, planetary station, and geometric vector. Explicitly explain in your prophecy how the geometry of this exact date mathematically and energetically aligns with the drawn mine coordinates, mineral crystallizations, and the seeker's destiny.
+3. THE PROPHECY MUST BE CLEAR, VIVID, AND NARRATIVE: Speak with absolute narrative clarity, storytelling warmth, and poetic authority. Avoid vague or repetitive generalities. Tell the seeker an evocative, structured story of what is currently unfolding, how the geological pressure is building, and the exact sequence of events leading up to ${targetFutureDate || "the target date"}.
 
 - Target Date: "${targetFutureDate || "The Unfolding Future"}"
 - Time Horizon: "${timeHorizon || "Medium Horizon"}"
@@ -184,20 +215,45 @@ Return your response strictly in valid JSON format matching this schema:
     "longTermOutcome": "The lasting, irreversible tectonic transformation that settles into the bedrock of the seeker's destiny."
   },
   "chthonicPrescription": {
+    "geomanticCode": "A unique alphanumeric code for this prescription (e.g. 'GEO-ARG-2610-8F4A')",
+    "geomanticFigureName": "Classical geomantic figure (e.g. 'Fortuna Major', 'Albus', 'Conjunctio', 'Acquisitio', 'Puella')",
     "prescribedMinerals": [
       {
-        "name": "Specific Mineral/Stone (e.g. Raw Malachite, Pyrite, Selenite, Black Tourmaline)",
-        "action": "How to hold, carry, or place this mineral (e.g. 'Place over the solar plexus at dusk')",
+        "name": "Specific Primary Mineral/Stone from the drawn mine (e.g. Raw Muzo Emerald Octahedron, Kimberley Diamond, Native Gold Vein)",
+        "specimenType": "Specific natural crystal habit or formation",
+        "crystalSystem": "Crystal system (e.g. Isometric, Hexagonal, Trigonal, Monoclinic)",
+        "mohsHardness": "Mohs hardness rating (e.g. '7.5 - 8.0')",
+        "placement": "Exact body energy center or room sanctuary placement",
+        "action": "How to hold, carry, meditate with, or place this mineral",
         "resonance": "Why this mineral's geological frequency stabilizes the upcoming future shift"
       },
       {
-        "name": "Second Mineral/Stone",
-        "action": "How to utilize this stone",
-        "resonance": "Its elemental frequency and protective qualities"
+        "name": "Second Grounding Mineral/Stone (e.g. Specular Hematite, Black Tourmaline, Smoky Quartz)",
+        "specimenType": "Grounding counter-weight specimen",
+        "crystalSystem": "Crystal system",
+        "mohsHardness": "Mohs hardness",
+        "placement": "Base Root, threshold, or non-dominant hand",
+        "action": "How to utilize this grounding shield stone",
+        "resonance": "Its protective qualities and electromagnetic anchoring"
       }
     ],
+    "catalyticMineral": {
+      "name": "A third catalytic mineral to spark manifestation (e.g. Red Carnelian, Blue Kyanite, Golden Citrine)",
+      "action": "How to utilize to accelerate breakthrough",
+      "resonance": "Transformational frequency",
+      "elementalSpark": "Elemental classification and spark (e.g. 'Fire • Vital Momentum')"
+    },
+    "altarGeometry": {
+      "pattern": "Name of sacred layout (e.g. 'Triangulation of Hermes', 'Vesica Piscis Portal', 'Vault of Saturn')",
+      "compassHeading": "Compass heading to face (e.g. 'North-East', 'South-East')",
+      "azimuthDegrees": 45,
+      "placementInstructions": "Step-by-step instructions on positioning the three stones"
+    },
+    "lithosphericChargingWindow": "Optimal day, planetary hour, and solar angle to charge the stones (e.g. 'Venusian Twilight at dusk on Friday')",
     "groundingRitual": "A detailed, visceral, sacred earthly practice to perform (e.g. walking barefoot on clay, salt water bath, lighting a candle near raw iron, writing intentions on stone).",
     "mantleRemedy": "A specific breathwork pattern (e.g. Inhale 4, hold 8, exhale 2 counts) and grounding method to regulate inner pressure.",
+    "somaticFocusCenter": "Target somatic center (e.g. 'Solar Plexus & Core Axis', 'Heart Sanctuary')",
+    "sealingFormula": "A sacred 1-2 sentence spoken affirmation or mantra embedding the mine, the mineral, and the seeker's intention to lock in the timeline.",
     "temporalMilestones": [
       {
         "timeframe": "Early Phase / Initial Seam",

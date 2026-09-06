@@ -10,6 +10,7 @@ import { GeometricShapeSvg } from './GeometricShapeSvg';
 import { CartographicFigureSvg } from './CartographicFigureSvg';
 import { latLngToMapCoords, TECTONIC_PLATES_PATHS } from '../utils/geo';
 import { exportReadingAsScroll, exportReadingAsHtml, exportReadingAsJson } from '../utils/offlineEngine';
+import { AccurateDivinationSystemModal } from './AccurateDivinationSystemModal';
 import {
   getCommercialSettings,
   getMineralPurchaseLink,
@@ -94,6 +95,7 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
   const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false);
   const [downloadedFeedback, setDownloadedFeedback] = useState<string | null>(null);
+  const [isAccurateSystemOpen, setIsAccurateSystemOpen] = useState<boolean>(false);
 
   const handleDownloadReading = (format: 'txt' | 'html' | 'json') => {
     if (!interpretation) return;
@@ -156,15 +158,6 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
     setDownloadedFeedback('Client Delivery Certificate (.html) Downloaded!');
     setTimeout(() => setDownloadedFeedback(null), 3500);
   };
-
-  const PRESET_HORIZONS = [
-    { label: '30 Days', date: getPresetDate(30), horizon: '1 Month Forward (Immediate Strata)' },
-    { label: '90 Days', date: getPresetDate(90), horizon: '3 Months Ahead (Next Quarter)' },
-    { label: '6 Months', date: getPresetDate(180), horizon: '6 Months (Next Solar Seam)' },
-    { label: '1 Year', date: getPresetDate(365), horizon: '1 Year Forward (Annual Cycle)' },
-    { label: 'Solstice/Equinox', date: getPresetDate(120), horizon: 'Next Astronomical Transit' },
-    { label: '2027 Macro Era', date: '2027-01-01', horizon: '2027 Long-Range Horizon' },
-  ];
 
   const handleStartExcavation = () => {
     sound.startSubterraneanDrone();
@@ -477,30 +470,7 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
                   </span>
                 </div>
 
-                {/* Preset Quick Horizon Buttons */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
-                  {PRESET_HORIZONS.map((p) => (
-                    <button
-                      key={p.label}
-                      type="button"
-                      onClick={() => {
-                        sound.playMineralClink();
-                        setFutureDate(p.date);
-                        setTimeHorizon(p.horizon);
-                      }}
-                      className={`px-3 py-2 rounded-xl text-xs font-serif transition-all text-left flex items-center justify-between border ${
-                        futureDate === p.date
-                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-[0_0_12px_rgba(245,158,11,0.2)]'
-                          : 'bg-stone-900 border-stone-800 text-stone-400 hover:text-stone-200 hover:border-stone-700'
-                      }`}
-                    >
-                      <span>{p.label}</span>
-                      <ArrowUpRight className="w-3 h-3 opacity-60" />
-                    </button>
-                  ))}
-                </div>
-
-                {/* Custom Date Input */}
+                {/* Date Input */}
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   <div className="w-full relative">
                     <input
@@ -563,14 +533,25 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
             </div>
 
             {/* Action Button */}
-            <button
-              onClick={handleStartExcavation}
-              disabled={isShuffling}
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-stone-950 font-serif font-bold text-base tracking-widest uppercase transition-all shadow-[0_0_30px_rgba(245,158,11,0.4)] hover:shadow-[0_0_45px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-95 flex items-center gap-3 disabled:opacity-50"
-            >
-              <Sparkles className="w-5 h-5 text-stone-950" />
-              {isShuffling ? 'Harmonizing Mine Geometry with Epoch...' : `Align Mine & Unveil Prophecy for ${futureDate}`}
-            </button>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <button
+                onClick={handleStartExcavation}
+                disabled={isShuffling}
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-stone-950 font-serif font-bold text-base tracking-widest uppercase transition-all shadow-[0_0_30px_rgba(245,158,11,0.4)] hover:shadow-[0_0_45px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                <Sparkles className="w-5 h-5 text-stone-950" />
+                {isShuffling ? 'Harmonizing Mine Geometry with Epoch...' : `Align Mine & Unveil Prophecy for ${futureDate}`}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsAccurateSystemOpen(true)}
+                className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-stone-900 border border-amber-500/40 hover:border-amber-400 text-amber-300 font-serif text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:bg-stone-850"
+              >
+                <ShieldAlert className="w-4 h-4 text-amber-400" />
+                <span>Deep Accuracy System (Geomancy Shield & Houses)</span>
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -684,6 +665,15 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
                     >
                       <Download className="w-3.5 h-3.5 text-amber-400" />
                       <span>Download Reading</span>
+                    </button>
+
+                    <button
+                      onClick={() => setIsAccurateSystemOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-950/70 hover:bg-amber-900/80 border border-amber-500/50 text-amber-300 text-xs font-serif transition-colors shadow-sm"
+                      title="Open full 16-figure Geomancy Shield, 12 Houses, Ephemeris & I Ching Matrix"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Accurate Divination System</span>
                     </button>
                   </div>
 
@@ -1690,6 +1680,15 @@ export const OracleChamber: React.FC<OracleChamberProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Gold-Standard Accurate Divination System Modal */}
+      <AccurateDivinationSystemModal
+        isOpen={isAccurateSystemOpen}
+        onClose={() => setIsAccurateSystemOpen(false)}
+        currentMine={drawnMines[0]?.mine || WORLD_MINES[0]}
+        question={question || 'General Inquiry of the Mantle'}
+        targetFutureDate={futureDate}
+      />
     </div>
   );
 };

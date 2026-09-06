@@ -40,15 +40,35 @@ export function formatProphecyText(reading: DivinationReading): string {
   }
 
   if (interp?.chthonicPrescription) {
-    lines.push(`PRESCRIPTION:`);
-    if (interp.chthonicPrescription.prescribedMinerals && interp.chthonicPrescription.prescribedMinerals.length > 0) {
-      lines.push(`• Mineral Allies: ${interp.chthonicPrescription.prescribedMinerals.map((m) => `${m.name} (${m.action})`).join('; ')}`);
+    const cp = interp.chthonicPrescription;
+    lines.push(`UNIQUE MINERAL GEOMANTIC PRESCRIPTION:`);
+    if (cp.geomanticCode) {
+      lines.push(`• Prescription Code: ${cp.geomanticCode} (${cp.geomanticFigureName || 'Chthonic Alignment'})`);
     }
-    if (interp.chthonicPrescription.groundingRitual) {
-      lines.push(`• Grounding Ritual: ${interp.chthonicPrescription.groundingRitual}`);
+    if (cp.prescribedMinerals && cp.prescribedMinerals.length > 0) {
+      cp.prescribedMinerals.forEach((m, idx) => {
+        const spec = m.specimenType ? ` [${m.specimenType}, ${m.crystalSystem || ''}]` : '';
+        const place = m.placement ? ` | Placement: ${m.placement}` : '';
+        lines.push(`• Mineral Ally #${idx + 1}: ${m.name}${spec} - ${m.action}${place}`);
+      });
     }
-    if (interp.chthonicPrescription.mantleRemedy) {
-      lines.push(`• Mantle Breathing: ${interp.chthonicPrescription.mantleRemedy}`);
+    if (cp.catalyticMineral) {
+      lines.push(`• Catalytic Mineral: ${cp.catalyticMineral.name} (${cp.catalyticMineral.elementalSpark || 'Catalyst'}) - ${cp.catalyticMineral.action}`);
+    }
+    if (cp.altarGeometry) {
+      lines.push(`• Altar Geometry: ${cp.altarGeometry.pattern} | Azimuth: ${cp.altarGeometry.compassHeading} (${cp.altarGeometry.azimuthDegrees}°) - ${cp.altarGeometry.placementInstructions}`);
+    }
+    if (cp.lithosphericChargingWindow) {
+      lines.push(`• Charging Window: ${cp.lithosphericChargingWindow}`);
+    }
+    if (cp.groundingRitual) {
+      lines.push(`• Grounding Ritual: ${cp.groundingRitual}`);
+    }
+    if (cp.mantleRemedy) {
+      lines.push(`• Mantle Breathing: ${cp.mantleRemedy}`);
+    }
+    if (cp.sealingFormula) {
+      lines.push(`• Spoken Sealing Formula: ${cp.sealingFormula}`);
     }
     lines.push(``);
   }
@@ -225,20 +245,42 @@ export function exportReadingAsScroll(reading: DivinationReading) {
     }
 
     if (interp.chthonicPrescription) {
+      const cp = interp.chthonicPrescription;
       lines.push(``);
-      lines.push(`─── CHTHONIC PRESCRIPTION & PLANETARY REMEDIES ───`);
-      interp.chthonicPrescription.prescribedMinerals.forEach((min, idx) => {
-        lines.push(`• Mineral Remedy #${idx + 1}: ${min.name}`);
-        lines.push(`  Application: ${min.action}`);
-        lines.push(`  Resonance:   ${min.resonance}`);
+      lines.push(`─── UNIQUE MINERAL GEOMANTIC PRESCRIPTION & PLANETARY REMEDIES ───`);
+      if (cp.geomanticCode) {
+        lines.push(`• Prescription Code: ${cp.geomanticCode}`);
+        lines.push(`• Geomantic Figure:  ${cp.geomanticFigureName || 'Chthonic Alignment'}`);
+      }
+      cp.prescribedMinerals.forEach((min, idx) => {
+        lines.push(`• Mineral Ally #${idx + 1}: ${min.name} [${min.specimenType || 'Earth Seam'}]`);
+        lines.push(`  Lattice System: ${min.crystalSystem || 'Crystalline'} | Hardness: Mohs ${min.mohsHardness || '7.0'}`);
+        lines.push(`  Placement:      ${min.placement || 'Altar/Body'}`);
+        lines.push(`  Application:    ${min.action}`);
+        lines.push(`  Resonance:      ${min.resonance}`);
       });
-      lines.push(`• Sacred Grounding Ritual: ${interp.chthonicPrescription.groundingRitual}`);
-      lines.push(`• Mantle Pressure Remedy: ${interp.chthonicPrescription.mantleRemedy}`);
+      if (cp.catalyticMineral) {
+        lines.push(`• Catalytic Mineral: ${cp.catalyticMineral.name} (${cp.catalyticMineral.elementalSpark})`);
+        lines.push(`  Application:    ${cp.catalyticMineral.action}`);
+      }
+      if (cp.altarGeometry) {
+        lines.push(`• Altar Geometry: ${cp.altarGeometry.pattern}`);
+        lines.push(`  Azimuth:        ${cp.altarGeometry.compassHeading} (${cp.altarGeometry.azimuthDegrees}°)`);
+        lines.push(`  Instructions:   ${cp.altarGeometry.placementInstructions}`);
+      }
+      if (cp.lithosphericChargingWindow) {
+        lines.push(`• Charging Window: ${cp.lithosphericChargingWindow}`);
+      }
+      lines.push(`• Sacred Grounding Ritual: ${cp.groundingRitual}`);
+      lines.push(`• Mantle Breathwork Remedy: ${cp.mantleRemedy}`);
+      if (cp.sealingFormula) {
+        lines.push(`• Spoken Sealing Formula: ${cp.sealingFormula}`);
+      }
 
-      if (interp.chthonicPrescription.temporalMilestones && interp.chthonicPrescription.temporalMilestones.length > 0) {
+      if (cp.temporalMilestones && cp.temporalMilestones.length > 0) {
         lines.push(``);
         lines.push(`─── CHRONOLOGICAL MILESTONES (PATH TO ${reading.targetFutureDate || 'TARGET'}) ───`);
-        interp.chthonicPrescription.temporalMilestones.forEach((ms, idx) => {
+        cp.temporalMilestones.forEach((ms, idx) => {
           lines.push(`${idx + 1}. [${ms.timeframe}] ${ms.guidance}`);
         });
       }

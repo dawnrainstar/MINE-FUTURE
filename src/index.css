@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    @apply antialiased text-stone-100 bg-stone-950 text-base leading-relaxed selection:bg-amber-500/30 selection:text-amber-200;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}

@@ -123,64 +123,64 @@ ${r.interpretation?.chthonicPrescription ? `
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-md animate-fadeIn">
       <div className="bg-stone-900 border border-amber-900/60 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-stone-800">
+        <div className="flex items-center justify-between pb-4 border-b border-stone-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
-              <HardDrive className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 shrink-0">
+              <HardDrive className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-serif font-bold text-stone-100 flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-stone-100 flex items-center gap-2">
                 Google Drive & Cloud Sync
               </h2>
-              <p className="text-xs text-stone-400 font-serif">
+              <p className="text-xs sm:text-sm text-stone-300 font-serif">
                 Export, backup, and store your prophecies and mine catalogs in Google Drive
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-stone-950 border border-stone-800 text-stone-400 hover:text-stone-100 transition-colors"
+            className="p-2.5 rounded-xl bg-stone-950 border border-stone-800 text-stone-400 hover:text-stone-100 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Sync Card */}
-        <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-600/30 text-xs font-serif text-amber-200/90 space-y-2">
-          <div className="flex items-center gap-2 text-amber-300 font-bold">
-            <Cloud className="w-4 h-4" />
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-xs sm:text-sm font-serif text-amber-100 space-y-2">
+          <div className="flex items-center gap-2 text-amber-300 font-bold text-sm sm:text-base">
+            <Cloud className="w-5 h-5 text-amber-400" />
             <span>Google Drive Archival Protocol</span>
           </div>
-          <p className="text-[11px] text-stone-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
             Preserve your divine subterranean prophecies, temporal horizons, and custom catalog of {mines.length.toLocaleString()} world mines directly to Google Drive as Markdown scrolls, JSON vaults, or CSV spreadsheets.
           </p>
         </div>
 
         {/* Action Options */}
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {/* Export Readings */}
-          <div className="p-3.5 bg-stone-950 rounded-2xl border border-stone-800 flex items-center justify-between gap-3">
+          <div className="p-4 bg-stone-950 rounded-2xl border border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="font-serif font-bold text-stone-200 text-xs flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-amber-400" />
+              <p className="font-serif font-bold text-stone-100 text-sm sm:text-base flex items-center gap-2">
+                <FileText className="w-4 h-4 text-amber-400" />
                 <span>Export Prophecy Journal ({readings.length} Inscribed Readings)</span>
               </p>
-              <p className="text-[11px] text-stone-400 font-serif mt-0.5">
+              <p className="text-xs sm:text-sm text-stone-400 font-serif mt-1">
                 Full oracle interpretations, timeline forecasts, and mineral prescriptions.
               </p>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={handleExportReadingsMarkdown}
                 disabled={readings.length === 0}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-bold font-serif text-xs transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-bold font-serif text-xs sm:text-sm transition-colors cursor-pointer"
               >
                 Markdown Scroll
               </button>
               <button
                 onClick={handleExportReadingsJSON}
                 disabled={readings.length === 0}
-                className="px-3 py-1.5 rounded-xl bg-stone-900 border border-stone-700 hover:border-amber-500/40 text-stone-200 font-serif text-xs"
+                className="px-3.5 py-2 rounded-xl bg-stone-900 border border-stone-700 hover:border-amber-500/40 text-stone-200 font-serif text-xs sm:text-sm cursor-pointer"
               >
                 JSON
               </button>
@@ -188,19 +188,19 @@ ${r.interpretation?.chthonicPrescription ? `
           </div>
 
           {/* Export Mines */}
-          <div className="p-3.5 bg-stone-950 rounded-2xl border border-stone-800 flex items-center justify-between gap-3">
+          <div className="p-4 bg-stone-950 rounded-2xl border border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="font-serif font-bold text-stone-200 text-xs flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <p className="font-serif font-bold text-stone-100 text-sm sm:text-base flex items-center gap-2">
+                <Layers className="w-4 h-4 text-emerald-400" />
                 <span>Export World Mines Catalog ({mines.length.toLocaleString()} Mines)</span>
               </p>
-              <p className="text-[11px] text-stone-400 font-serif mt-0.5">
+              <p className="text-xs sm:text-sm text-stone-400 font-serif mt-1">
                 Geographic coordinates, depths, commodities, and personified deities.
               </p>
             </div>
             <button
               onClick={handleExportMinesCSV}
-              className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 hover:bg-emerald-500/30 text-emerald-300 font-bold font-serif text-xs transition-colors"
+              className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 hover:bg-emerald-500/30 text-emerald-300 font-bold font-serif text-xs sm:text-sm transition-colors shrink-0 cursor-pointer"
             >
               CSV Sheet
             </button>
@@ -208,8 +208,8 @@ ${r.interpretation?.chthonicPrescription ? `
         </div>
 
         {syncStatus && (
-          <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 font-serif flex items-center gap-2 animate-fadeIn">
-            <CheckCircle2 className="w-4 h-4" />
+          <div className="p-3.5 bg-emerald-950/60 border border-emerald-500/50 rounded-xl text-sm text-emerald-200 font-serif flex items-center gap-2.5 animate-fadeIn">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
             <span>{syncStatus}</span>
           </div>
         )}
@@ -218,7 +218,7 @@ ${r.interpretation?.chthonicPrescription ? `
         <div className="pt-3 border-t border-stone-800 flex items-center justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs font-serif text-stone-300 hover:text-white"
+            className="px-5 py-2.5 rounded-xl bg-stone-950 border border-stone-800 text-sm font-serif font-semibold text-stone-200 hover:text-white cursor-pointer"
           >
             Close
           </button>

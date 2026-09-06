@@ -192,16 +192,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </button>
 
         {/* Header Title */}
-        <div className="text-center space-y-2 pt-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-800 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.35)] border border-amber-300/40">
-            <Compass className="w-7 h-7" />
+        <div className="text-center space-y-2.5 pt-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-800 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.35)] border border-amber-300/40">
+            <Compass className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-serif font-bold text-amber-200">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-200">
             {mode === 'signup' && 'Create Your Oracle Account'}
             {mode === 'signin' && 'Sign In to Your Account'}
             {mode === 'profile' && 'Astrology Account Profile'}
           </h2>
-          <p className="text-xs text-stone-400 font-serif max-w-sm mx-auto">
+          <p className="text-sm text-stone-300 font-serif max-w-md mx-auto leading-relaxed">
             {mode === 'signup' &&
               'Unlock 100 free astrology prophecy readings, save your natal cartography, and sync your planetary readings.'}
             {mode === 'signin' &&
@@ -213,17 +213,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Mode Switcher Tabs */}
         {mode !== 'profile' && (
-          <div className="flex bg-stone-950/80 p-1 rounded-2xl border border-stone-800">
+          <div className="flex bg-stone-950 p-1.5 rounded-2xl border border-stone-800">
             <button
               type="button"
               onClick={() => {
                 setMode('signup');
                 setErrorMessage(null);
               }}
-              className={`flex-1 py-2 text-xs font-serif font-semibold rounded-xl transition-all ${
+              className={`flex-1 py-2.5 text-xs sm:text-sm font-serif font-bold rounded-xl transition-all ${
                 mode === 'signup'
                   ? 'bg-amber-500 text-stone-950 shadow-md'
-                  : 'text-stone-400 hover:text-stone-200'
+                  : 'text-stone-300 hover:text-white'
               }`}
             >
               Sign Up (Free)
@@ -234,10 +234,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 setMode('signin');
                 setErrorMessage(null);
               }}
-              className={`flex-1 py-2 text-xs font-serif font-semibold rounded-xl transition-all ${
+              className={`flex-1 py-2.5 text-xs sm:text-sm font-serif font-bold rounded-xl transition-all ${
                 mode === 'signin'
                   ? 'bg-amber-500 text-stone-950 shadow-md'
-                  : 'text-stone-400 hover:text-stone-200'
+                  : 'text-stone-300 hover:text-white'
               }`}
             >
               Sign In
@@ -247,76 +247,76 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Alerts */}
         {errorMessage && (
-          <div className="p-3 rounded-2xl bg-red-950/60 border border-red-500/50 text-red-200 text-xs font-serif flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="p-4 rounded-2xl bg-red-950/70 border border-red-500/60 text-red-200 text-sm font-serif flex items-center gap-2.5">
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
             <span>{errorMessage}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="p-3 rounded-2xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-200 text-xs font-serif flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="p-4 rounded-2xl bg-emerald-950/70 border border-emerald-500/60 text-emerald-200 text-sm font-serif flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{successMessage}</span>
           </div>
         )}
 
         {/* SIGN UP FORM */}
         {mode === 'signup' && (
-          <form onSubmit={handleSignUpSubmit} className="space-y-4">
+          <form onSubmit={handleSignUpSubmit} className="space-y-4 pt-1">
             {/* Free Readings Starter Banner */}
-            <div className="p-3 rounded-2xl bg-amber-950/40 border border-amber-500/30 flex items-center justify-between text-xs font-serif text-amber-200">
+            <div className="p-3.5 rounded-2xl bg-amber-950/50 border border-amber-500/40 flex items-center justify-between text-xs sm:text-sm font-serif text-amber-200">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>Includes 100 Free Readings Starter Pack</span>
+                <span className="font-semibold">Includes 100 Free Readings Starter Pack</span>
               </div>
-              <span className="font-mono text-[10px] font-bold text-amber-300 px-2 py-0.5 rounded-full bg-amber-500/20">
+              <span className="font-mono text-xs font-bold text-amber-300 px-2.5 py-1 rounded-full bg-amber-500/25 border border-amber-500/30">
                 100 CREDITS
               </span>
             </div>
 
             {/* Name */}
-            <div className="space-y-1">
-              <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                 Full Name / Astrological Persona <span className="text-amber-400">*</span>
               </label>
               <div className="relative">
-                <User className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                <User className="absolute left-3.5 top-3.5 w-4 h-4 text-stone-400" />
                 <input
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Dawn Rainstar or Selene Vance"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-600"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div className="space-y-1">
-              <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                 Email Address <span className="text-amber-400">*</span>
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-stone-400" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-600"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                 />
               </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-1">
-              <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                 Password / Sacred Passkey <span className="text-amber-400">*</span>
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-stone-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
@@ -324,12 +324,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-600"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3 text-stone-500 hover:text-stone-300"
+                  className="absolute right-3.5 top-3.5 text-stone-400 hover:text-stone-200"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -337,15 +337,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
 
             {/* Zodiac & Element Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="space-y-1.5">
+                <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                   Zodiac Sun Sign
                 </label>
                 <select
                   value={zodiacSign}
                   onChange={(e) => setZodiacSign(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-200"
+                  className="w-full px-3.5 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-200 font-sans"
                 >
                   {ZODIAC_SIGNS.map((sign) => (
                     <option key={sign} value={sign}>
@@ -355,14 +355,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </select>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-serif font-medium text-stone-300">
+              <div className="space-y-1.5">
+                <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                   Elemental Affiliation
                 </label>
                 <select
                   value={element}
                   onChange={(e) => setElement(e.target.value as ElementalAffinity)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-xs text-stone-200"
+                  className="w-full px-3.5 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-200 font-sans"
                 >
                   {ELEMENTAL_AFFINITIES.map((el) => (
                     <option key={el} value={el}>
@@ -377,13 +377,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 hover:from-amber-400 hover:to-amber-200 text-stone-950 font-serif font-bold text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-[0.99] flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 hover:from-amber-400 hover:to-amber-200 text-stone-950 font-serif font-bold text-sm sm:text-base transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-[0.99] flex items-center justify-center gap-2 mt-3 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>Registering Inscription...</span>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-stone-950" />
+                  <Sparkles className="w-5 h-5 text-stone-950" />
                   <span>Create Account & Claim 100 Free Readings</span>
                   <ArrowRight className="w-4 h-4 text-stone-950" />
                 </>
@@ -395,7 +395,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="button"
                 onClick={handleDemoSignIn}
-                className="text-xs font-serif text-amber-400/90 hover:text-amber-300 underline underline-offset-4"
+                className="text-xs sm:text-sm font-serif text-amber-300 hover:text-amber-200 underline underline-offset-4"
               >
                 Or sign in instantly with Demo Practitioner account
               </button>
@@ -405,44 +405,44 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* SIGN IN FORM */}
         {mode === 'signin' && (
-          <form onSubmit={handleSignInSubmit} className="space-y-4">
+          <form onSubmit={handleSignInSubmit} className="space-y-4 pt-1">
             {/* Email */}
-            <div className="space-y-1">
-              <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                 Email Address <span className="text-amber-400">*</span>
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-stone-400" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-600"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                 />
               </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-1">
-              <label className="block text-xs font-serif font-medium text-stone-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs sm:text-sm font-serif font-semibold text-stone-200">
                 Password / Passkey <span className="text-amber-400">*</span>
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-stone-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Your passkey"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-stone-950 border border-stone-800 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-600"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-stone-950 border border-stone-700 focus:border-amber-400 focus:outline-none text-sm text-stone-100 placeholder-stone-500 font-sans"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3 text-stone-500 hover:text-stone-300"
+                  className="absolute right-3.5 top-3.5 text-stone-400 hover:text-stone-200"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -453,13 +453,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-bold text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.25)] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 px-5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-bold text-sm sm:text-base transition-all shadow-[0_0_20px_rgba(245,158,11,0.25)] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>Verifying Celestial Record...</span>
               ) : (
                 <>
-                  <Lock className="w-4 h-4 text-stone-950" />
+                  <Lock className="w-5 h-5 text-stone-950" />
                   <span>Sign In</span>
                   <ArrowRight className="w-4 h-4 text-stone-950" />
                 </>
@@ -471,11 +471,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="button"
                 onClick={handleDemoSignIn}
-                className="w-full py-2.5 px-3 rounded-xl bg-stone-950 hover:bg-stone-800 text-amber-300 border border-stone-800 text-xs font-serif transition-colors"
+                className="w-full py-3 px-4 rounded-xl bg-stone-950 hover:bg-stone-800 text-amber-300 border border-stone-800 text-xs sm:text-sm font-serif font-semibold transition-colors"
               >
                 ⚡ 1-Click Instant Demo Login (Rainstar Seer)
               </button>
-              <p className="text-[11px] text-stone-500 font-serif">
+              <p className="text-xs text-stone-400 font-serif">
                 Don&apos;t have an account yet?{' '}
                 <button
                   type="button"
